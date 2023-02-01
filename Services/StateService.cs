@@ -8,8 +8,8 @@ public interface IStateService
     Orientation Direction { get; }
     int Zoom { get; }
 
-    string GetTile(int x, int y);
-    void Move(int byX, int byY);
+    string GetTile(Point coords);
+    void Move(int byX, int by);
     void RotateLeft();
     void RotateRight();
     void ZoomIn();
@@ -18,14 +18,14 @@ public interface IStateService
 
 public class StateService : IStateService
 {
-    private Microsoft.Xna.Framework.Game _game;
+    private Game _game;
     private int _zoom = 1;
 
     public Point Size { get; private set; }
     public Orientation Direction { get; private set; } = Orientation.NORTH;
     public int Zoom => _zoom;
 
-    public StateService(Microsoft.Xna.Framework.Game game, Point size)
+    public StateService(Game game, Point size)
     {
         _game = game;
         Size = size;
@@ -77,36 +77,15 @@ public class StateService : IStateService
         }
     }
 
-    public void Move(int byX, int byY)
+    public void Move(int byX, int by)
     {
         // not yet implemented
     }
 
-    public string GetTile(int x, int y)
+    public string GetTile(Point coords)
     {
-        int xx = 0, yy = 0;
-
-        switch (Direction)
-        {
-            case Orientation.NORTH:
-                xx = x;
-                yy = y;
-                break;
-            case Orientation.EAST:
-                xx = y;
-                yy = Size.Y - 1 - x;
-                break;
-            case Orientation.SOUTH:
-                xx = Size.X - 1 - x;
-                yy = Size.Y - 1 - y;
-                break;
-            case Orientation.WEST:
-                xx = Size.X - 1 - y;
-                yy = x;
-                break;
-        }
-
-        if (xx == 5 && yy == 10 || xx == 5 && yy == 11 || xx == 5 && yy == 12 || xx == 5 && yy == 13 || xx == 6 && yy == 13 || xx == 6 && yy == 14)
+        int x = coords.X, y = coords.Y;
+        if (x == 5 && y == 10 || x == 5 && y == 11 || x == 5 && y == 12 || x == 5 && y == 13 || x == 6 && y == 13 || x == 6 && y == 14)
         {
             return "empty";
         }

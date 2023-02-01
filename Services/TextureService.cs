@@ -15,10 +15,10 @@ public interface ITextureService
 
 public class TextureService : ITextureService
 {
-    private Microsoft.Xna.Framework.Game _game;
+    private Game _game;
     private Dictionary<string, Texture2D> _tileTextures;
 
-    public TextureService(Microsoft.Xna.Framework.Game game)
+    public TextureService(Game game)
     {
         _game = game;
     }

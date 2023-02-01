@@ -49,10 +49,37 @@ public class DrawingService : IDrawingService
 
         void DrawOneTile(int x, int y)
         {
-            var texture = _textureService.Get(_state.GetTile(x,y));
+            var texture = _textureService.Get(_state.GetTile(ApplyOrientation(x, y)));
             spritebatch.Draw(texture, new Rectangle(xStart + ((x - y) * width / 2), yStart + ((x + y) * ((height - thickness) / 2)), width, height), Color.White);
         }
         
         spritebatch.End();
+    }
+
+    private Point ApplyOrientation(int x, int y)
+    {
+        int xx = 0, yy = 0;
+
+        switch (_state.Direction)
+        {
+            case Orientation.NORTH:
+                xx = x;
+                yy = y;
+                break;
+            case Orientation.EAST:
+                xx = y;
+                yy = _state.Size.Y - 1 - x;
+                break;
+            case Orientation.SOUTH:
+                xx = _state.Size.X - 1 - x;
+                yy = _state.Size.Y - 1 - y;
+                break;
+            case Orientation.WEST:
+                xx = _state.Size.X - 1 - y;
+                yy = x;
+                break;
+        }
+
+        return new Point(xx, yy);
     }
 }
