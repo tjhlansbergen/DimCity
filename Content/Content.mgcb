@@ -457,6 +457,18 @@
 /processorParam:TextureFormat=Color
 /build:Tiles/grassWhole.png
 
+#begin Tiles/grid.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Tiles/grid.png
+
 #begin Tiles/hillE.png
 /importer:TextureImporter
 /processor:TextureProcessor
