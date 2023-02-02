@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 
 namespace DimCity;
@@ -7,9 +8,12 @@ public interface IStateService
     Point Size { get; }
     Orientation Direction { get; }
     int Zoom { get; }
+    Point Cursor { get; }
+    Point View { get; }
 
     string GetTile(Point coords);
-    void Move(int byX, int by);
+    void MoveCursor(int byX, int by);
+    void MoveView(int byX, int by);
     void RotateLeft();
     void RotateRight();
     void ZoomIn();
@@ -18,17 +22,21 @@ public interface IStateService
 
 public class StateService : IStateService
 {
-    private Game _game;
-    private int _zoom = 1;
+    private DimGame _game;
+    private int _zoom = Constants.MAX_ZOOM;
+    
 
     public Point Size { get; private set; }
     public Orientation Direction { get; private set; } = Orientation.NORTH;
     public int Zoom => _zoom;
+    public Point Cursor { get; private set; }
+    public Point View { get; private set; }
 
-    public StateService(Game game, Point size)
+    public StateService(DimGame game, Point size)
     {
         _game = game;
         Size = size;
+        Cursor = new Point(Size.X / 2, Size.Y / 2);
     }
 
     public void ZoomIn()
@@ -37,7 +45,7 @@ public class StateService : IStateService
     }
     public void ZoomOut()
     {
-        if (_zoom < 5) _zoom++;
+        if (_zoom < Constants.MAX_ZOOM) _zoom++;
     }
 
     public void RotateLeft()
@@ -77,9 +85,26 @@ public class StateService : IStateService
         }
     }
 
-    public void Move(int byX, int by)
+    public void MoveCursor(int byX, int byY)
     {
-        // not yet implemented
+        var dest = Cursor;
+        dest.X += byX;
+        dest.Y += byY;
+
+        if (new Rectangle(new Point(0,0), Size).Contains(dest)) Cursor = dest;
+    }
+
+    public void MoveView(int byX, int byY)
+    {
+        var dest = View;
+        dest.X += byX;
+        dest.Y += byY;
+
+        var x = _game.Resolution.X;
+        var y = _game.Resolution.Y;
+        var bounds = new Rectangle(0-x,0-(y*2), x*2, y*3);
+        bounds.Inflate(-100*_zoom, -100*_zoom);
+        if (bounds.Contains(dest) || !bounds.Contains(View)) View = dest;
     }
 
     public string GetTile(Point coords)
@@ -87,9 +112,9 @@ public class StateService : IStateService
         int x = coords.X, y = coords.Y;
         if (x == 5 && y == 10 || x == 5 && y == 11 || x == 5 && y == 12 || x == 5 && y == 13 || x == 6 && y == 13 || x == 6 && y == 14)
         {
-            return "empty";
+            return "grass";
         }
 
-        return "grass";
+        return "road";
     }
 }

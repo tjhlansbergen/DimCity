@@ -6,12 +6,17 @@ namespace DimCity;
 
 public class DimGame : Game
 {
+    public Point Resolution { get; private set; }
+
     public DimGame()
     {
         var graphicsDeviceManager = new GraphicsDeviceManager(this);
         graphicsDeviceManager.IsFullScreen = true;
-        graphicsDeviceManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-        graphicsDeviceManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+        //graphicsDeviceManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+        //graphicsDeviceManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+
+        Resolution = new Point(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
+
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;

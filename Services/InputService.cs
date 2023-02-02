@@ -1,9 +1,4 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace DimCity;
@@ -30,7 +25,7 @@ public class InputService : IInputService
         var keyboard = Keyboard.GetState();
 
         // no keys pressed, release lock
-        if (keyboard.GetPressedKeyCount() == 0 || keyboard.GetPressedKeyCount() == 1 && keyboard.IsKeyDown(Keys.Space))
+        if (keyboard.GetPressedKeyCount() == 0 || keyboard.GetPressedKeyCount() == 1 && IsModifierDown(keyboard))
         {
             _lock = false;
             return;
@@ -46,18 +41,30 @@ public class InputService : IInputService
             if (keyboard.IsKeyDown(Keys.Down)) _state.ZoomOut();
             if (keyboard.IsKeyDown(Keys.Left)) _state.RotateLeft();
             if (keyboard.IsKeyDown(Keys.Right)) _state.RotateRight();
+            _lock = true;
         }
-        else
+        else if (keyboard.IsKeyDown(Keys.LeftControl))
         {
-            var moveBy = 1;
-            if (keyboard.IsKeyDown(Keys.LeftControl)) moveBy = 5;
-
-            if (keyboard.IsKeyDown(Keys.Up)) _state.Move(0, -1 * moveBy);
-            if (keyboard.IsKeyDown(Keys.Down)) _state.Move(0, 1 * moveBy);
-            if (keyboard.IsKeyDown(Keys.Left)) _state.Move(-1 * moveBy, 0);
-            if (keyboard.IsKeyDown(Keys.Right)) _state.Move(1 * moveBy, 0);
+            if (keyboard.IsKeyDown(Keys.Up)) _state.MoveView(0, -10);
+            if (keyboard.IsKeyDown(Keys.Down)) _state.MoveView(0, 10);
+            if (keyboard.IsKeyDown(Keys.Left)) _state.MoveView(-10, 0);
+            if (keyboard.IsKeyDown(Keys.Right)) _state.MoveView(10, 0);
         }
+        else 
+        {
+            if (keyboard.IsKeyDown(Keys.Up)) _state.MoveCursor(0, -1);
+            if (keyboard.IsKeyDown(Keys.Down)) _state.MoveCursor(0, 1);
+            if (keyboard.IsKeyDown(Keys.Left)) _state.MoveCursor(-1, 0);
+            if (keyboard.IsKeyDown(Keys.Right)) _state.MoveCursor(1, 0);
+            
+            if (!keyboard.IsKeyDown(Keys.LeftAlt)) _lock = true;
+        }
+    }
 
-        _lock = true;
+    private bool IsModifierDown(KeyboardState keyboard)
+    {
+        return (keyboard.IsKeyDown(Keys.Space) ||
+                keyboard.IsKeyDown(Keys.LeftAlt) ||
+                keyboard.IsKeyDown(Keys.LeftControl)); 
     }
 }
