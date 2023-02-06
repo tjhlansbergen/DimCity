@@ -10,7 +10,10 @@ namespace DimCity;
 public interface ITextureService
 {
     public void Load(ContentManager content);
-    public Texture2D Get(string key);
+    public Texture2D GetTile(string key);
+    public Texture2D GetTile(int index);
+    public int CountTiles();
+
 }
 
 public class TextureService : ITextureService
@@ -32,8 +35,18 @@ public class TextureService : ITextureService
                         .ToDictionary(fileName => fileName, fileName => contentManager.Load<Texture2D>(Path.Join(tileFolder, fileName)));
     }
 
-    public Texture2D Get(string key)
+    public Texture2D GetTile(string key)
     {
         return _tileTextures[key];
+    }
+
+    public Texture2D GetTile(int index)
+    {
+        return _tileTextures.ElementAt(index).Value;
+    }
+
+    public int CountTiles()
+    {
+        return _tileTextures.Count();
     }
 }

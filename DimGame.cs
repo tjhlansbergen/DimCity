@@ -12,11 +12,7 @@ public class DimGame : Game
     {
         var graphicsDeviceManager = new GraphicsDeviceManager(this);
         graphicsDeviceManager.IsFullScreen = true;
-        //graphicsDeviceManager.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-        //graphicsDeviceManager.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-
         Resolution = new Point(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
-
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -24,7 +20,7 @@ public class DimGame : Game
 
     protected override void Initialize()
     {
-        Services.AddService<IStateService>(new StateService(this, new Point(100,100)));
+        Services.AddService<IStateService>(new StateService(this, new Point(100, 100)));    // beware, be square
         Services.AddService<ITextureService>(new TextureService(this));
         Services.AddService<IDrawingService>(new DrawingService(this));
         Services.AddService<IInputService>(new InputService(this));

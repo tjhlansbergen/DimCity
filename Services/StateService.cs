@@ -10,6 +10,7 @@ public interface IStateService
     int Zoom { get; }
     Point Cursor { get; }
     Point View { get; }
+    bool Menu { get; set; }
 
     string GetTile(Point coords);
     void MoveCursor(int byX, int by);
@@ -31,6 +32,7 @@ public class StateService : IStateService
     public int Zoom => _zoom;
     public Point Cursor { get; private set; }
     public Point View { get; private set; }
+    public bool Menu { get; set; }
 
     public StateService(DimGame game, Point size)
     {
@@ -87,9 +89,31 @@ public class StateService : IStateService
 
     public void MoveCursor(int byX, int byY)
     {
+        int xx = 0, yy = 0;
+
+        switch (Direction)
+        {
+            case Orientation.NORTH:
+                xx = byX;
+                yy = byY;
+                break;
+            case Orientation.EAST:
+                xx = byY;
+                yy = 0-byX;
+                break;
+            case Orientation.SOUTH:
+                xx = 0-byX;
+                yy = 0-byY;
+                break;
+            case Orientation.WEST:
+                xx = 0-byY;
+                yy = byX;
+                break;
+        }
+
         var dest = Cursor;
-        dest.X += byX;
-        dest.Y += byY;
+        dest.X += xx;
+        dest.Y += yy;
 
         if (new Rectangle(new Point(0,0), Size).Contains(dest)) Cursor = dest;
     }

@@ -34,6 +34,7 @@ public class InputService : IInputService
         if (_lock) return;
 
         if (keyboard.IsKeyDown(Keys.Escape)) _game.Exit();
+        if (keyboard.IsKeyDown(Keys.Tab)) _state.Menu = !_state.Menu;
 
         if (keyboard.IsKeyDown(Keys.Space))
         {
@@ -52,8 +53,8 @@ public class InputService : IInputService
         }
         else 
         {
-            if (keyboard.IsKeyDown(Keys.Up)) _state.MoveCursor(0, -1);
-            if (keyboard.IsKeyDown(Keys.Down)) _state.MoveCursor(0, 1);
+            if (keyboard.IsKeyDown(Keys.Up) || keyboard.IsKeyDown(Keys.PageUp)) _state.MoveCursor(0, -1);
+            if (keyboard.IsKeyDown(Keys.Down) || keyboard.IsKeyDown(Keys.PageDown)) _state.MoveCursor(0, 1);
             if (keyboard.IsKeyDown(Keys.Left)) _state.MoveCursor(-1, 0);
             if (keyboard.IsKeyDown(Keys.Right)) _state.MoveCursor(1, 0);
             

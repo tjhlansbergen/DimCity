@@ -10,11 +10,10 @@ public interface IDrawingService
 
 public class DrawingService : IDrawingService
 {
-    private Game _game;
+    private DimGame _game;
     private IStateService _state;
     private IGraphicsDeviceService _graphicsDeviceService;
     private ITextureService _textureService;
-    private Point _start;
 
     public DrawingService(DimGame game)
     {
@@ -22,7 +21,6 @@ public class DrawingService : IDrawingService
         _state = game.Services.GetService<IStateService>();
         _graphicsDeviceService = game.Services.GetService<IGraphicsDeviceService>();
         _textureService = game.Services.GetService<ITextureService>();
-        _start = new Point(game.Resolution.X / 2, 20);
     }
 
     public void Draw()
@@ -36,8 +34,9 @@ public class DrawingService : IDrawingService
         var height = 130 / _state.Zoom;
         var thickness = 30 / _state.Zoom;
 
-        var left = _start.X + _state.View.X;
-        var top = _start.Y + _state.View.Y - ((Constants.MAX_ZOOM - _state.Zoom) * height);
+        var start = new Point(_game.Resolution.X / 2, 20);
+        var left = start.X + _state.View.X;
+        var top = start.Y + _state.View.Y - ((Constants.MAX_ZOOM - _state.Zoom) * height);
 
         for (int y = 0; y < _state.Size.Y; y++)
         {
@@ -47,17 +46,41 @@ public class DrawingService : IDrawingService
             }
         }
 
+        if (_state.Menu) DrawMenu();
+
         void DrawOneTile(int x, int y)
         {
-            var texture = _textureService.Get(_state.GetTile(ApplyOrientation(x, y)));
-
-            var tileKey = ApplyOrientation(x,y);
-
-            var t = _textureService.Get(_state.GetTile(tileKey));
+            var rotatedXY = ApplyOrientation(x,y);
+    
+            var t = _textureService.GetTile(_state.GetTile(rotatedXY));
             var r = new Rectangle(left + ((x - y) * width / 2), top + ((x + y) * ((height - thickness) / 2)), width, height);
-            var c = (tileKey == _state.Cursor) ? Color.White * 0.7f : Color.White;
+            var c =  (rotatedXY == _state.Cursor) ? Color.White * 0.7f : (_state.Menu) ? Color.White * 0.5f : Color.White;
 
             spritebatch.Draw(t, r, c);
+        }
+
+        void DrawMenu()
+        {
+            var border = 30;
+            var bounds = new Rectangle(border, border, _game.Resolution.X / 5, _game.Resolution.Y - (border*2));
+            spritebatch.Draw(ColoredTexture(Color.MidnightBlue), bounds, Color.White);
+            bounds.Inflate(-2,-2);
+            spritebatch.Draw(ColoredTexture(Color.CornflowerBlue), bounds, Color.White);
+            bounds.Inflate(-2,-2);
+            spritebatch.Draw(ColoredTexture(Color.MidnightBlue), bounds, Color.White);
+
+            var pad = 12;
+            var cols = 6;
+            var size = (bounds.Width - ((cols + 1) * pad)) / cols;
+
+            for (int i = 0; i < _textureService.CountTiles(); i++)
+            {
+                var y = i / cols;
+                var x = i - (y * cols);
+                var xx = bounds.X + ((x + 1) * pad) + (x * size);
+                var yy = bounds.Y + ((y + 1) * pad) + (y * size);
+                spritebatch.Draw(_textureService.GetTile(i), new Rectangle(xx, yy, size, size), Color.White);    
+            }
         }
         
         spritebatch.End();
@@ -88,5 +111,12 @@ public class DrawingService : IDrawingService
         }
 
         return new Point(xx, yy);
+    }
+
+    private Texture2D ColoredTexture(Color color)
+    {
+        var texture = new Texture2D(_graphicsDeviceService.GraphicsDevice, 1, 1);
+        texture.SetData(new Color[] { color } );
+        return texture;
     }
 }
