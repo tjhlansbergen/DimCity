@@ -10,7 +10,8 @@ public interface IStateService
     int Zoom { get; }
     Point Cursor { get; }
     Point View { get; }
-    bool Menu { get; set; }
+    bool MenuVisible { get; set; }
+    Menu GameMenu { get; set; }
 
     string GetTile(Point coords);
     void MoveCursor(int byX, int by);
@@ -32,13 +33,15 @@ public class StateService : IStateService
     public int Zoom => _zoom;
     public Point Cursor { get; private set; }
     public Point View { get; private set; }
-    public bool Menu { get; set; }
+    public bool MenuVisible { get; set; }
+    public Menu GameMenu { get; set; }
 
     public StateService(DimGame game, Point size)
     {
         _game = game;
         Size = size;
         Cursor = new Point(Size.X / 2, Size.Y / 2);
+        GameMenu = new Menu();
     }
 
     public void ZoomIn()

@@ -46,7 +46,7 @@ public class DrawingService : IDrawingService
             }
         }
 
-        if (_state.Menu) DrawMenu();
+        if (_state.MenuVisible) DrawMenu();
 
         void DrawOneTile(int x, int y)
         {
@@ -54,7 +54,7 @@ public class DrawingService : IDrawingService
     
             var t = _textureService.GetTile(_state.GetTile(rotatedXY));
             var r = new Rectangle(left + ((x - y) * width / 2), top + ((x + y) * ((height - thickness) / 2)), width, height);
-            var c =  (rotatedXY == _state.Cursor) ? Color.White * 0.7f : (_state.Menu) ? Color.White * 0.5f : Color.White;
+            var c =  (rotatedXY == _state.Cursor) ? Color.White * 0.7f : (_state.MenuVisible) ? Color.White * 0.5f : Color.White;
 
             spritebatch.Draw(t, r, c);
         }
@@ -65,22 +65,37 @@ public class DrawingService : IDrawingService
             var bounds = new Rectangle(border, border, _game.Resolution.X / 5, _game.Resolution.Y - (border*2));
             spritebatch.Draw(ColoredTexture(Color.MidnightBlue), bounds, Color.White);
             bounds.Inflate(-2,-2);
-            spritebatch.Draw(ColoredTexture(Color.CornflowerBlue), bounds, Color.White);
-            bounds.Inflate(-2,-2);
-            spritebatch.Draw(ColoredTexture(Color.MidnightBlue), bounds, Color.White);
+            spritebatch.Draw(ColoredTexture(Color.Beige), bounds, Color.White);
 
-            var pad = 12;
-            var cols = 6;
-            var size = (bounds.Width - ((cols + 1) * pad)) / cols;
-
-            for (int i = 0; i < _textureService.CountTiles(); i++)
+            const int padding = 12;
+            const int cols = 6;
+            var height = bounds.Y + border;
+            var size = (bounds.Width - ((cols * (padding * 2)) + border )) / cols;
+            
+            foreach (var section in Menu.GetSections())
             {
-                var y = i / cols;
-                var x = i - (y * cols);
-                var xx = bounds.X + ((x + 1) * pad) + (x * size);
-                var yy = bounds.Y + ((y + 1) * pad) + (y * size);
-                spritebatch.Draw(_textureService.GetTile(i), new Rectangle(xx, yy, size, size), Color.White);    
+                // todo show section name instead
+                spritebatch.Draw(ColoredTexture(Color.SlateBlue), new Rectangle(bounds.X + border, height, bounds.Width - border, 2), Color.White);
+                height += 2 + border;
+
+                if (_state.GameMenu.ActiveSection == section.Key)
+                {
+                    var tiles = Menu.GetTileNames(section.Key);
+                    for (int i = 0; i < tiles.Count; i++)
+                    {
+                        var x = i - ((i / cols) * cols);
+                        var xx = bounds.X + border + ((x + 1) * padding) + (x * size);
+                        spritebatch.Draw(_textureService.GetTile(tiles[i]), new Rectangle(xx, height, size, size), Color.White);    
+                        if (x == cols - 1) height += size + (padding*2);
+                    }
+                    height += border + size;
+                }
             }
+
+
+            
+
+
         }
         
         spritebatch.End();

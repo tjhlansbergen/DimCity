@@ -34,7 +34,17 @@ public class InputService : IInputService
         if (_lock) return;
 
         if (keyboard.IsKeyDown(Keys.Escape)) _game.Exit();
-        if (keyboard.IsKeyDown(Keys.Tab)) _state.Menu = !_state.Menu;
+        if (keyboard.IsKeyDown(Keys.Tab)) _state.MenuVisible = !_state.MenuVisible;
+
+        if (_state.MenuVisible)
+        {
+            if (keyboard.IsKeyDown(Keys.Up)) _state.GameMenu.Up();
+            if (keyboard.IsKeyDown(Keys.Down)) _state.GameMenu.Down();
+            //if (keyboard.IsKeyDown(Keys.Left)) _state.RotateLeft();
+            //if (keyboard.IsKeyDown(Keys.Right)) _state.RotateRight();
+            _lock = true;
+            return;
+        }
 
         if (keyboard.IsKeyDown(Keys.Space))
         {
