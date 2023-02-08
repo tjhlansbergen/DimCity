@@ -11,16 +11,17 @@ public class Menu
     {
         if (ActiveSection == null)
         {
-            ActiveSection = 0;
             return;
         } 
 
         if (ActiveSection == 0)
         {
+            ActiveSection = null;
             return;
         }
 
         ActiveSection--;
+        ActiveTile = 0;
     }
 
     public void Down()
@@ -28,6 +29,7 @@ public class Menu
         if (ActiveSection == null)
         {
             ActiveSection = 0;
+            ActiveTile = 0;
             return;
         } 
 
@@ -37,6 +39,45 @@ public class Menu
         }
 
         ActiveSection++;
+        ActiveTile = 0;
+    }
+
+    public void Left()
+    {
+        if (ActiveSection == null)
+        {
+            ActiveTile = null;
+            return;
+        }
+        if (ActiveTile == null)
+        {
+            ActiveTile = 0;
+            return;
+        }
+        if (ActiveTile == 0)
+        {
+            return;
+        }
+        ActiveTile--;
+    }
+
+    public void Right()
+    {
+        if (ActiveSection == null)
+        {
+            ActiveTile = null;
+            return;
+        }
+        if (ActiveTile == null)
+        {
+            ActiveTile = 0;
+            return;
+        }
+        if (ActiveTile > GetTileNames(ActiveSection.Value).Count) 
+        {
+            return;
+        }
+        ActiveTile++;
     }
 
     public static Dictionary<int, string> GetSections()

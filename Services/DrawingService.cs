@@ -14,6 +14,7 @@ public class DrawingService : IDrawingService
     private IStateService _state;
     private IGraphicsDeviceService _graphicsDeviceService;
     private ITextureService _textureService;
+    
 
     public DrawingService(DimGame game)
     {
@@ -21,6 +22,7 @@ public class DrawingService : IDrawingService
         _state = game.Services.GetService<IStateService>();
         _graphicsDeviceService = game.Services.GetService<IGraphicsDeviceService>();
         _textureService = game.Services.GetService<ITextureService>();
+        
     }
 
     public void Draw()
@@ -70,13 +72,14 @@ public class DrawingService : IDrawingService
             const int padding = 12;
             const int cols = 6;
             var height = bounds.Y + border;
-            var size = (bounds.Width - ((cols * (padding * 2)) + border )) / cols;
+            var size = (bounds.Width - border - (cols * padding)) / cols;
             
             foreach (var section in Menu.GetSections())
             {
                 // todo show section name instead
+                spritebatch.DrawString(_textureService.RobotoFont, section.Value, new Vector2(bounds.X + border, height + 2), Color.Black);
                 spritebatch.Draw(ColoredTexture(Color.SlateBlue), new Rectangle(bounds.X + border, height, bounds.Width - border, 2), Color.White);
-                height += 2 + border;
+                height += border + padding;
 
                 if (_state.GameMenu.ActiveSection == section.Key)
                 {
@@ -84,18 +87,20 @@ public class DrawingService : IDrawingService
                     for (int i = 0; i < tiles.Count; i++)
                     {
                         var x = i - ((i / cols) * cols);
-                        var xx = bounds.X + border + ((x + 1) * padding) + (x * size);
-                        spritebatch.Draw(_textureService.GetTile(tiles[i]), new Rectangle(xx, height, size, size), Color.White);    
+                        var xx = bounds.X + border + (x * (padding + size));
+                        var c = (i == _state.GameMenu.ActiveTile) ? Color.White * 0.6f : Color.White;
+                        
+                        spritebatch.Draw(_textureService.GetTile(tiles[i]), new Rectangle(xx, height, size, size), c);    
+                        
                         if (x == cols - 1) height += size + (padding*2);
                     }
                     height += border + size;
                 }
+                else
+                {
+                    height += border;
+                }
             }
-
-
-            
-
-
         }
         
         spritebatch.End();

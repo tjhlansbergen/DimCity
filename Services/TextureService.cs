@@ -13,13 +13,15 @@ public interface ITextureService
     public Texture2D GetTile(string key);
     public Texture2D GetTile(int index);
     public int CountTiles();
-
+    public SpriteFont RobotoFont { get; }
+    
 }
 
 public class TextureService : ITextureService
 {
     private Game _game;
     private Dictionary<string, Texture2D> _tileTextures;
+    public SpriteFont RobotoFont { get; private set; }
 
     public TextureService(Game game)
     {
@@ -33,6 +35,8 @@ public class TextureService : ITextureService
                         .GetFiles("*.png")
                         .Select(file => Path.GetFileNameWithoutExtension(file.Name))
                         .ToDictionary(fileName => fileName, fileName => contentManager.Load<Texture2D>(Path.Join(tileFolder, fileName)));
+
+        RobotoFont = contentManager.Load<SpriteFont>("Roboto");
     }
 
     public Texture2D GetTile(string key)

@@ -40,8 +40,8 @@ public class InputService : IInputService
         {
             if (keyboard.IsKeyDown(Keys.Up)) _state.GameMenu.Up();
             if (keyboard.IsKeyDown(Keys.Down)) _state.GameMenu.Down();
-            //if (keyboard.IsKeyDown(Keys.Left)) _state.RotateLeft();
-            //if (keyboard.IsKeyDown(Keys.Right)) _state.RotateRight();
+            if (keyboard.IsKeyDown(Keys.Left)) _state.GameMenu.Left();
+            if (keyboard.IsKeyDown(Keys.Right)) _state.GameMenu.Right();
             _lock = true;
             return;
         }
