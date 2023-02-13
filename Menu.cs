@@ -4,15 +4,16 @@ namespace DimCity;
 
 public class Menu
 {
-    public int? ActiveSection { get; set; }
-    public int? ActiveTile { get; set; }
+    public int? ActiveSection { get; set; } = 0;
+    public int? ActiveTile { get; set; } = 0;
+
 
     public void Up()
     {
         if (ActiveSection == null)
         {
             return;
-        } 
+        }
 
         if (ActiveSection == 0)
         {
@@ -31,7 +32,7 @@ public class Menu
             ActiveSection = 0;
             ActiveTile = 0;
             return;
-        } 
+        }
 
         if (ActiveSection == GetSections().Count - 1)
         {
@@ -73,11 +74,17 @@ public class Menu
             ActiveTile = 0;
             return;
         }
-        if (ActiveTile > GetTileNames(ActiveSection.Value).Count) 
+        if (ActiveTile > GetTileNames(ActiveSection.Value).Count - 2)
         {
             return;
         }
         ActiveTile++;
+    }
+
+    public string GetSelectedTileName()
+    {
+        if (ActiveSection == null || ActiveTile == null) return null;
+        return GetTileNames(ActiveSection.Value)[ActiveTile.Value];
     }
 
     public static Dictionary<int, string> GetSections()
@@ -95,60 +102,25 @@ public class Menu
         switch (section)
         {
             case 0:
-                return new List<string> { 
-                    "grass",
+                return new List<string> {
+                    "road",
                     "dirt",
                     "water",
-                    "beach", 
-                    "road", 
-                    "grassWhole", 
-                    "beachCornerES",
+                    "beach",
+                    "grass",
+                    "grassWhole",
                     "beachCornerNE",
-                    "beachCornerNW",
-                    "beachCornerSW",
-                    "beachE",
-                    "beachES",
                     "beachNE",
                     "beachN",
-                    "beachNW",
-                    "beach",
-                    "beachS",
-                    "beachSW",
-                    "beachW",
-                    "grassWhole",
-                    "hillE",
-                    "hillES",
                     "hillNE",
                     "hillN",
-                    "hillNW",
-                    "hillS",
-                    "hillSW",
-                    "hillW",
-                    "riverBankedES",
-                    "riverBankedEW",
                     "riverBankedNE",
                     "riverBankedNS",
-                    "riverBankedNW",
-                    "riverBankedSW",
-                    "riverES",
-                    "riverEW",
                     "riverNE",
                     "riverNS",
-                    "riverNW",
-                    "riverSW",
-                    "waterCornerES",
                     "waterCornerNE",
-                    "waterCornerNW",
-                    "waterCornerSW",
-                    "waterE",
-                    "waterES",
                     "waterNE",
                     "waterN",
-                    "waterNW",
-                    "water",
-                    "waterS",
-                    "waterSW",
-                    "waterW",           
                     };
             case 1:
                 return new List<string> {
@@ -157,44 +129,17 @@ public class Menu
             case 2:
                 return new List<string> {
                     "road",
-                    "roadES",
-                    "roadEW",
-                    "roadHill2E",
                     "roadHill2N",
-                    "roadHill2S",
-                    "roadHill2W",
-                    "roadHillE",
                     "roadHillN",
-                    "roadHillS",
-                    "roadHillW",
                     "roadNE",
                     "roadNS",
-                    "roadNW",
-                    "road",
-                    "roadSW",
-                    "lotE",
-                    "lotES",
                     "lotNE",
                     "lotN",
-                    "lotNW",
-                    "lotS",
-                    "lotSW",
-                    "lotW",
-                    "endE",
                     "endN",
-                    "endS",
-                    "endW",
-                    "exitE",
                     "exitN",
-                    "exitS",
-                    "exitW",
                     "crossroadESW",
-                    "crossroadNES",
-                    "crossroadNEW",
-                    "crossroadNSW",
                     "crossroad",
-                    "bridgeEW",
-                    "bridgeNS",                
+                    "bridgeNS",
                 };
             default:
                 return new List<string>();

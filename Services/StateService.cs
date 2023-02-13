@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
 namespace DimCity;
@@ -13,19 +14,22 @@ public interface IStateService
     bool MenuVisible { get; set; }
     Menu GameMenu { get; set; }
 
-    string GetTile(Point coords);
+    string GetTileTextureName(Point coords);
     void MoveCursor(int byX, int by);
     void MoveView(int byX, int by);
     void RotateLeft();
     void RotateRight();
     void ZoomIn();
     void ZoomOut();
+    void Build();
 }
 
 public class StateService : IStateService
 {
     private DimGame _game;
     private int _zoom = Constants.MAX_ZOOM;
+
+    private Dictionary<Point, Tile> _tiles;
     
 
     public Point Size { get; private set; }
@@ -39,9 +43,24 @@ public class StateService : IStateService
     public StateService(DimGame game, Point size)
     {
         _game = game;
+        _initTiles(size);
+
         Size = size;
         Cursor = new Point(Size.X / 2, Size.Y / 2);
         GameMenu = new Menu();
+    }
+
+    private void _initTiles(Point size)
+    {
+        _tiles = new Dictionary<Point, Tile>();
+
+        for (int y = 0; y < size.Y; y++)
+        {
+            for (int x = 0; x < size.X; x++)
+            {
+                _tiles.Add(new Point(x,y), new Tile());
+            }
+        }
     }
 
     public void ZoomIn()
@@ -134,14 +153,18 @@ public class StateService : IStateService
         if (bounds.Contains(dest) || !bounds.Contains(View)) View = dest;
     }
 
-    public string GetTile(Point coords)
+    public string GetTileTextureName(Point coords)
     {
-        int x = coords.X, y = coords.Y;
-        if (x == 5 && y == 10 || x == 5 && y == 11 || x == 5 && y == 12 || x == 5 && y == 13 || x == 6 && y == 13 || x == 6 && y == 14)
-        {
-            return "grass";
-        }
+        return _tiles[coords].TextureName;
+    }
 
-        return "road";
+    public void Build()
+    {
+        var tileName = GameMenu.GetSelectedTileName();
+
+        if (MenuVisible) return;
+        if (tileName == null) return;
+        
+        _tiles[Cursor] = new Tile { TextureName = tileName };
     }
 }

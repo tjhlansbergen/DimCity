@@ -1,6 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace DimCity;
 
@@ -8,10 +8,10 @@ public class DimGame : Game
 {
     public Point Resolution { get; private set; }
 
-    public DimGame()
+    public DimGame(bool windowed)
     {
         var graphicsDeviceManager = new GraphicsDeviceManager(this);
-        graphicsDeviceManager.IsFullScreen = true;
+        if (!windowed) graphicsDeviceManager.IsFullScreen = true;
         Resolution = new Point(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
 
         Content.RootDirectory = "Content";
@@ -24,7 +24,7 @@ public class DimGame : Game
         Services.AddService<ITextureService>(new TextureService(this));
         Services.AddService<IDrawingService>(new DrawingService(this));
         Services.AddService<IInputService>(new InputService(this));
-        
+
         base.Initialize();
     }
 

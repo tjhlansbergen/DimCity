@@ -54,7 +54,7 @@ public class DrawingService : IDrawingService
         {
             var rotatedXY = ApplyOrientation(x,y);
     
-            var t = _textureService.GetTile(_state.GetTile(rotatedXY));
+            var t = (rotatedXY == _state.Cursor && _state.GameMenu.GetSelectedTileName() != null) ? _textureService.GetTexture(_state.GameMenu.GetSelectedTileName()) : _textureService.GetTexture(_state.GetTileTextureName(rotatedXY));
             var r = new Rectangle(left + ((x - y) * width / 2), top + ((x + y) * ((height - thickness) / 2)), width, height);
             var c =  (rotatedXY == _state.Cursor) ? Color.White * 0.7f : (_state.MenuVisible) ? Color.White * 0.5f : Color.White;
 
@@ -76,7 +76,6 @@ public class DrawingService : IDrawingService
             
             foreach (var section in Menu.GetSections())
             {
-                // todo show section name instead
                 spritebatch.DrawString(_textureService.RobotoFont, section.Value, new Vector2(bounds.X + border, height + 2), Color.Black);
                 spritebatch.Draw(ColoredTexture(Color.SlateBlue), new Rectangle(bounds.X + border, height, bounds.Width - border, 2), Color.White);
                 height += border + padding;
@@ -88,9 +87,10 @@ public class DrawingService : IDrawingService
                     {
                         var x = i - ((i / cols) * cols);
                         var xx = bounds.X + border + (x * (padding + size));
-                        var c = (i == _state.GameMenu.ActiveTile) ? Color.White * 0.6f : Color.White;
+                        var r = new Rectangle(xx, height, size, size);
                         
-                        spritebatch.Draw(_textureService.GetTile(tiles[i]), new Rectangle(xx, height, size, size), c);    
+                        if (i == _state.GameMenu.ActiveTile) spritebatch.Draw(ColoredTexture(Color.BurlyWood), r.InflateAndReturn(6,6), Color.White);
+                        spritebatch.Draw(_textureService.GetTexture(tiles[i]), r, Color.White);    
                         
                         if (x == cols - 1) height += size + (padding*2);
                     }

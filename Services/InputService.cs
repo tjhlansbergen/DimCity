@@ -33,9 +33,12 @@ public class InputService : IInputService
 
         if (_lock) return;
 
+        // single keys
         if (keyboard.IsKeyDown(Keys.Escape)) _game.Exit();
         if (keyboard.IsKeyDown(Keys.Tab)) _state.MenuVisible = !_state.MenuVisible;
+        if (keyboard.IsKeyDown(Keys.Enter)) _state.Build();
 
+        // combo keys
         if (_state.MenuVisible)
         {
             if (keyboard.IsKeyDown(Keys.Up)) _state.GameMenu.Up();
@@ -56,10 +59,10 @@ public class InputService : IInputService
         }
         else if (keyboard.IsKeyDown(Keys.LeftControl))
         {
-            if (keyboard.IsKeyDown(Keys.Up)) _state.MoveView(0, -10);
-            if (keyboard.IsKeyDown(Keys.Down)) _state.MoveView(0, 10);
-            if (keyboard.IsKeyDown(Keys.Left)) _state.MoveView(-10, 0);
-            if (keyboard.IsKeyDown(Keys.Right)) _state.MoveView(10, 0);
+            if (keyboard.IsKeyDown(Keys.Up)) _state.MoveView(0, 10);
+            if (keyboard.IsKeyDown(Keys.Down)) _state.MoveView(0, -10);
+            if (keyboard.IsKeyDown(Keys.Left)) _state.MoveView(10, 0);
+            if (keyboard.IsKeyDown(Keys.Right)) _state.MoveView(-10, 0);
         }
         else 
         {
