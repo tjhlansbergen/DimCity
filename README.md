@@ -10,3 +10,5 @@ https://pixlr.com/x/
 
 # Thanks to:
 https://clintbellanger.net/articles/isometric_math/
+
+# Controls:

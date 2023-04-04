@@ -44,4 +44,13 @@ public class DimGame : Game
         Services.GetService<IDrawingService>().Draw();
         base.Draw(gameTime);
     }
+
+    protected override void OnExiting(Object sender, EventArgs args)
+    {
+        System.Console.WriteLine("Exiting");
+        var save = Services.GetService<IStateService>().SaveGame();
+        System.Console.WriteLine(save);
+
+        base.OnExiting(sender, args);
+    }
 }

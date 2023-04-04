@@ -11,7 +11,7 @@ public interface IDrawingService
 public class DrawingService : IDrawingService
 {
     private DimGame _game;
-    private IStateService _state;
+    private IStateService _stateService;
     private IGraphicsDeviceService _graphicsDeviceService;
     private ITextureService _textureService;
     
@@ -19,7 +19,7 @@ public class DrawingService : IDrawingService
     public DrawingService(DimGame game)
     {
         _game = game;
-        _state = game.Services.GetService<IStateService>();
+        _stateService = game.Services.GetService<IStateService>();
         _graphicsDeviceService = game.Services.GetService<IGraphicsDeviceService>();
         _textureService = game.Services.GetService<ITextureService>();
         
@@ -32,31 +32,31 @@ public class DrawingService : IDrawingService
         var spritebatch = new SpriteBatch(_graphicsDeviceService.GraphicsDevice);
         spritebatch.Begin();
 
-        var width = 200 / _state.Zoom;
-        var height = 130 / _state.Zoom;
-        var thickness = 30 / _state.Zoom;
+        var width = 200 / _stateService.Zoom;
+        var height = 130 / _stateService.Zoom;
+        var thickness = 30 / _stateService.Zoom;
 
         var start = new Point(_game.Resolution.X / 2, 20);
-        var left = start.X + _state.View.X;
-        var top = start.Y + _state.View.Y - ((Constants.MAX_ZOOM - _state.Zoom) * height);
+        var left = start.X + _stateService.View.X;
+        var top = start.Y + _stateService.View.Y - ((Constants.MAX_ZOOM - _stateService.Zoom) * height);
 
-        for (int y = 0; y < _state.Size.Y; y++)
+        for (int y = 0; y < _stateService.Size.Y; y++)
         {
-            for (int x = 0; x < _state.Size.X; x++)
+            for (int x = 0; x < _stateService.Size.X; x++)
             {
                 DrawOneTile(x, y);
             }
         }
 
-        if (_state.MenuVisible) DrawMenu();
+        if (_stateService.MenuVisible) DrawMenu();
 
         void DrawOneTile(int x, int y)
         {
             var rotatedXY = ApplyOrientation(x,y);
     
-            var t = (rotatedXY == _state.Cursor && _state.GameMenu.GetSelectedTileName() != null) ? _textureService.GetTexture(_state.GameMenu.GetSelectedTileName()) : _textureService.GetTexture(_state.GetTileTextureName(rotatedXY));
+            var t = (rotatedXY == _stateService.Cursor && _stateService.GameMenu.GetSelectedTileName() != null) ? _textureService.GetTexture(_stateService.GameMenu.GetSelectedTileName()) : _textureService.GetTexture(_stateService.GetTileTextureName(rotatedXY));
             var r = new Rectangle(left + ((x - y) * width / 2), top + ((x + y) * ((height - thickness) / 2)), width, height);
-            var c =  (rotatedXY == _state.Cursor) ? Color.White * 0.7f : (_state.MenuVisible) ? Color.White * 0.5f : Color.White;
+            var c =  (rotatedXY == _stateService.Cursor) ? Color.White * 0.7f : (_stateService.MenuVisible) ? Color.White * 0.5f : Color.White;
 
             spritebatch.Draw(t, r, c);
         }
@@ -80,7 +80,7 @@ public class DrawingService : IDrawingService
                 spritebatch.Draw(ColoredTexture(Color.SlateBlue), new Rectangle(bounds.X + border, height, bounds.Width - border, 2), Color.White);
                 height += border + padding;
 
-                if (_state.GameMenu.ActiveSection == section.Key)
+                if (_stateService.GameMenu.ActiveSection == section.Key)
                 {
                     var tiles = Menu.GetTileNames(section.Key);
                     for (int i = 0; i < tiles.Count; i++)
@@ -89,7 +89,7 @@ public class DrawingService : IDrawingService
                         var xx = bounds.X + border + (x * (padding + size));
                         var r = new Rectangle(xx, height, size, size);
                         
-                        if (i == _state.GameMenu.ActiveTile) spritebatch.Draw(ColoredTexture(Color.BurlyWood), r.InflateAndReturn(6,6), Color.White);
+                        if (i == _stateService.GameMenu.ActiveTile) spritebatch.Draw(ColoredTexture(Color.BurlyWood), r.InflateAndReturn(6,6), Color.White);
                         spritebatch.Draw(_textureService.GetTexture(tiles[i]), r, Color.White);    
                         
                         if (x == cols - 1) height += size + (padding*2);
@@ -110,7 +110,7 @@ public class DrawingService : IDrawingService
     {
         int xx = 0, yy = 0;
 
-        switch (_state.Direction)
+        switch (_stateService.Direction)
         {
             case Orientation.NORTH:
                 xx = x;
@@ -118,14 +118,14 @@ public class DrawingService : IDrawingService
                 break;
             case Orientation.EAST:
                 xx = y;
-                yy = _state.Size.Y - 1 - x;
+                yy = _stateService.Size.Y - 1 - x;
                 break;
             case Orientation.SOUTH:
-                xx = _state.Size.X - 1 - x;
-                yy = _state.Size.Y - 1 - y;
+                xx = _stateService.Size.X - 1 - x;
+                yy = _stateService.Size.Y - 1 - y;
                 break;
             case Orientation.WEST:
-                xx = _state.Size.X - 1 - y;
+                xx = _stateService.Size.X - 1 - y;
                 yy = x;
                 break;
         }

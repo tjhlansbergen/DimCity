@@ -11,7 +11,7 @@ public interface ITextureService
 {
     public void Load(ContentManager content);
     public Texture2D GetTexture(string key);
-    public Texture2D GetTile(int index);
+    public Texture2D GetTexture(int index);
     public int CountTiles();
     public SpriteFont RobotoFont { get; }
     
@@ -44,7 +44,7 @@ public class TextureService : ITextureService
         return _tileTextures[key];
     }
 
-    public Texture2D GetTile(int index)
+    public Texture2D GetTexture(int index)
     {
         return _tileTextures.ElementAt(index).Value;
     }
