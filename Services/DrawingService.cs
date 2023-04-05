@@ -40,9 +40,9 @@ public class DrawingService : IDrawingService
         var left = start.X + _stateService.View.X;
         var top = start.Y + _stateService.View.Y - ((Constants.MAX_ZOOM - _stateService.Zoom) * height);
 
-        for (int y = 0; y < _stateService.Size.Y; y++)
+        for (int y = 0; y < _stateService.Size; y++)
         {
-            for (int x = 0; x < _stateService.Size.X; x++)
+            for (int x = 0; x < _stateService.Size; x++)
             {
                 DrawOneTile(x, y);
             }
@@ -54,7 +54,9 @@ public class DrawingService : IDrawingService
         {
             var rotatedXY = ApplyOrientation(x,y);
     
-            var t = (rotatedXY == _stateService.Cursor && _stateService.GameMenu.GetSelectedTileName() != null) ? _textureService.GetTexture(_stateService.GameMenu.GetSelectedTileName()) : _textureService.GetTexture(_stateService.GetTileTextureName(rotatedXY));
+            var t = (rotatedXY == _stateService.Cursor && _stateService.GameMenu.GetSelectedTileName() != null) 
+                    ? _textureService.GetTexture(_stateService.GameMenu.GetSelectedTileName()) 
+                    : _textureService.GetTexture(_stateService.GetTileTextureName(rotatedXY));
             var r = new Rectangle(left + ((x - y) * width / 2), top + ((x + y) * ((height - thickness) / 2)), width, height);
             var c =  (rotatedXY == _stateService.Cursor) ? Color.White * 0.7f : (_stateService.MenuVisible) ? Color.White * 0.5f : Color.White;
 
@@ -118,14 +120,14 @@ public class DrawingService : IDrawingService
                 break;
             case Orientation.EAST:
                 xx = y;
-                yy = _stateService.Size.Y - 1 - x;
+                yy = _stateService.Size - 1 - x;
                 break;
             case Orientation.SOUTH:
-                xx = _stateService.Size.X - 1 - x;
-                yy = _stateService.Size.Y - 1 - y;
+                xx = _stateService.Size - 1 - x;
+                yy = _stateService.Size - 1 - y;
                 break;
             case Orientation.WEST:
-                xx = _stateService.Size.X - 1 - y;
+                xx = _stateService.Size - 1 - y;
                 yy = x;
                 break;
         }

@@ -20,7 +20,7 @@ public class DimGame : Game
 
     protected override void Initialize()
     {
-        Services.AddService<IStateService>(new StateService(this, new Point(100, 100)));    // beware, be square
+        Services.AddService<IStateService>(new StateService(this));
         Services.AddService<ITextureService>(new TextureService(this));
         Services.AddService<IDrawingService>(new DrawingService(this));
         Services.AddService<IInputService>(new InputService(this));
@@ -48,8 +48,8 @@ public class DimGame : Game
     protected override void OnExiting(Object sender, EventArgs args)
     {
         System.Console.WriteLine("Exiting");
-        var save = Services.GetService<IStateService>().SaveGame();
-        System.Console.WriteLine(save);
+        Services.GetService<IStateService>().SaveGame();
+        System.Console.WriteLine($"Game saved to: {Constants.SAVE_PATH}");
 
         base.OnExiting(sender, args);
     }

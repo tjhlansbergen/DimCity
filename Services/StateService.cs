@@ -1,14 +1,14 @@
 using System;
+using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using System.Linq;
 
 namespace DimCity;
 
 public interface IStateService
 {
-    Point Size { get; }
+    int Size { get; }
     Orientation Direction { get; }
     int Zoom { get; }
     Point Cursor { get; }
@@ -24,7 +24,7 @@ public interface IStateService
     void ZoomIn();
     void ZoomOut();
     void Build();
-    string SaveGame();
+    void SaveGame();
 }
 
 public class StateService : IStateService
@@ -34,90 +34,65 @@ public class StateService : IStateService
 
     public Menu GameMenu { get; set; }
 
-    public Point Size => _state.Size;
-    public Orientation Direction => _state.Direction;
-    public int Zoom => _state.Zoom;
-    public Point Cursor => _state.Cursor;
-    public Point View => _state.View;
+    public int Size { get => _state.Size; set => _state.Size = value; }
+    public Orientation Direction { get => _state.Direction; set => _state.Direction = value; }
+    public int Zoom { get => _state.Zoom; set => _state.Zoom = value; }
+    public Point Cursor { get => new Point(_state.Cursor.Item1, _state.Cursor.Item2); set => _state.Cursor = Tuple.Create(value.X, value.Y); }
+    public Point View { get => new Point(_state.View.Item1, _state.View.Item2); set => _state.View = Tuple.Create(value.X, value.Y); }
     public bool MenuVisible { get => _state.MenuVisible; set => _state.MenuVisible = value; }
 
-    public StateService(DimGame game, Point size)
+    public StateService(DimGame game)
     {
         _game = game;
-        _state = new State();
-        _state.Size = size;
-        _state.Cursor = new Point(size.X / 2, size.Y / 2);
-        _state.Tiles = _initTiles(size);
-        _state.Zoom = Constants.MAX_ZOOM;
-        
+        _state = LoadGame() ?? NewGame();
+
         GameMenu = new Menu();
     }
 
-    public StateService(DimGame game, State state)
-    {
-        _game = game;
-        _state = state;
-        
-        GameMenu = new Menu();
-    }
-
-    private static Dictionary<Point, Tile> _initTiles(Point size)
-    {
-        var tiles = new Dictionary<Point, Tile>();
-
-        for (int y = 0; y < size.Y; y++)
-        {
-            for (int x = 0; x < size.X; x++)
-            {
-                tiles.Add(new Point(x,y), new Tile());
-            }
-        }
-
-        return tiles;
-    }
+    
 
     public void ZoomIn()
     {
-        if (_state.Zoom > 1) _state.Zoom--;
+        if (Zoom > 1) Zoom--;
     }
     public void ZoomOut()
     {
-        if (_state.Zoom < Constants.MAX_ZOOM) _state.Zoom++;
+        if (Zoom < Constants.MAX_ZOOM) Zoom++;
     }
 
     public void RotateLeft()
     {
-        switch (_state.Direction)
+        switch (Direction)
         {
             case Orientation.NORTH:
-                _state.Direction = Orientation.WEST;
+                Direction = Orientation.WEST;
                 break;
             case Orientation.EAST:
-                _state.Direction = Orientation.NORTH;
+                Direction = Orientation.NORTH;
                 break;
             case Orientation.SOUTH:
-                _state.Direction = Orientation.EAST;
+                Direction = Orientation.EAST;
                 break;
             case Orientation.WEST:
-                _state.Direction = Orientation.SOUTH;
+                Direction = Orientation.SOUTH;
                 break;
         }
     }
     public void RotateRight()
     {
-        switch (_state.Direction)
+        switch (Direction)
         {
             case Orientation.NORTH:
-                _state.Direction = Orientation.EAST;
+                Direction = Orientation.EAST;
                 break;
             case Orientation.EAST:
-                _state.Direction = Orientation.SOUTH;
+                Direction = Orientation.SOUTH;
                 break;
             case Orientation.SOUTH:
-                _state.Direction = Orientation.WEST;
+                Direction = Orientation.WEST;
                 break;
             case Orientation.WEST:
-                _state.Direction = Orientation.NORTH;
+                Direction = Orientation.NORTH;
                 break;
         }
     }
@@ -126,7 +101,7 @@ public class StateService : IStateService
     {
         int xx = 0, yy = 0;
 
-        switch (_state.Direction)
+        switch (Direction)
         {
             case Orientation.NORTH:
                 xx = byX;
@@ -146,46 +121,76 @@ public class StateService : IStateService
                 break;
         }
 
-        var dest = _state.Cursor;
+        var dest = Cursor;
         dest.X += xx;
         dest.Y += yy;
 
-        if (new Rectangle(new Point(0,0), _state.Size).Contains(dest)) _state.Cursor = dest;
+        if (new Rectangle(new Point(0,0), new Point(Size, Size)).Contains(dest)) Cursor = dest;
     }
 
     public void MoveView(int byX, int byY)
     {
-        var dest = _state.View;
+        var dest = View;
         dest.X += byX;
         dest.Y += byY;
 
         var x = _game.Resolution.X;
         var y = _game.Resolution.Y;
         var bounds = new Rectangle(0-x,0-(y*2), x*2, y*3);
-        bounds.Inflate(-100*_state.Zoom, -100*_state.Zoom);
-        if (bounds.Contains(dest) || !bounds.Contains(_state.View)) _state.View = dest;
+        bounds.Inflate(-100*Zoom, -100*Zoom);
+        if (bounds.Contains(dest) || !bounds.Contains(View)) View = dest;
     }
 
     public string GetTileTextureName(Point coords)
     {
-        return _state.Tiles[coords].TextureName;
+        var index = Utils.PointToIndex(coords, Size);
+        return _state.Tiles[index].TextureName;
     }
 
     public void Build()
     {
         var tileName = GameMenu.GetSelectedTileName();
 
-        if (_state.MenuVisible) return;
+        if (MenuVisible) return;
         if (tileName == null) return;
         
-        _state.Tiles[_state.Cursor] = new Tile { TextureName = tileName };
+        var index = Utils.PointToIndex(Cursor, Size);
+        _state.Tiles[index] = new Tile { TextureName = tileName };
     }
 
-    public string SaveGame()
+    public void SaveGame()
     {
-        var path = "path";
-        var json = JsonSerializer.Serialize(_state);
+        JsonSerializerOptions options = new () { WriteIndented = true };
+        var json = JsonSerializer.Serialize(_state, options);
+        File.WriteAllText(Constants.SAVE_PATH, json);
+    }
 
-        return path;
+    private State LoadGame()
+    {
+        try
+        {
+            var state = JsonSerializer.Deserialize<State>(File.ReadAllText(Constants.SAVE_PATH));
+            System.Console.WriteLine($"Loaded game from: {Constants.SAVE_PATH}");
+            return state;
+        }
+        catch
+        {
+            System.Console.WriteLine($"Unable to load from: {Constants.SAVE_PATH}");
+            return null;
+        }
+    }
+
+    private State NewGame()
+    {
+        var state = new State();
+        state.Size = Constants.SIZE;
+        state.Cursor = Tuple.Create(Constants.SIZE / 2, Constants.SIZE / 2);
+        state.View = Tuple.Create(0,0);
+        state.Tiles = Enumerable.Range(0, Constants.SIZE * Constants.SIZE).ToDictionary(x => x, x => new Tile());
+        state.Zoom = Constants.MAX_ZOOM;
+
+        System.Console.WriteLine($"Starting new game with size of {Constants.SIZE}");
+
+        return state;
     }
 }
