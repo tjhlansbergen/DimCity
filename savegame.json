@@ -30002,15 +30002,15 @@
     }
   },
   "Size": 100,
-  "Direction": 2,
-  "Zoom": 6,
+  "Direction": 3,
+  "Zoom": 7,
   "Cursor": {
-    "Item1": 62,
-    "Item2": 52
+    "Item1": 23,
+    "Item2": 99
   },
   "View": {
-    "Item1": 550,
-    "Item2": 100
+    "Item1": 1000,
+    "Item2": 410
   },
   "MenuVisible": false
 }

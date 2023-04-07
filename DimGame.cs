@@ -11,8 +11,22 @@ public class DimGame : Game
     public DimGame(bool windowed)
     {
         var graphicsDeviceManager = new GraphicsDeviceManager(this);
-        if (!windowed) graphicsDeviceManager.IsFullScreen = true;
-        Resolution = new Point(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
+        if (windowed) 
+        {
+            graphicsDeviceManager.PreferredBackBufferWidth = 1280;
+            graphicsDeviceManager.PreferredBackBufferHeight = 720;
+            graphicsDeviceManager.ApplyChanges();
+            
+            Resolution = new Point(graphicsDeviceManager.PreferredBackBufferWidth, graphicsDeviceManager.PreferredBackBufferHeight);            
+            this.Window.AllowUserResizing = true;
+
+        }
+        else
+        {
+            graphicsDeviceManager.IsFullScreen = true;
+            Resolution = new Point(GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width, GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height);
+        }
+        
 
         Content.RootDirectory = "Content";
         IsMouseVisible = true;

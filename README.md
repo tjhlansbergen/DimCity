@@ -1,6 +1,12 @@
 # DimCity
 A MonoGame SimCity remake
 
+# Installation:
+
+dotnet new --install MonoGame.Templates.CSharp
+dotnet tool install -g dotnet-mgcb
+Install the required fonts (currently Roboto-Bold.ttf)
+
 # Project setup:
 dotnet new mgdesktopgl
 
