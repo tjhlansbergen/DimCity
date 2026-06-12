@@ -1,21 +1,32 @@
-﻿using Raylib_cs;
+﻿using System.Numerics;
+using Raylib_cs;
 
 internal static class Program
 {
+    private static readonly Console console = new();
+    private static Font consoleFont;
+    private static Vector2 offset = new(0, 0);
+
 
 
     public static void Main()
     {
+        console.Write("Welcome to DimCity!");
+        console.Write("Click and hold to pan around.");
 
         Raylib.InitWindow(1300, 700, "DimCity");
         Raylib.ToggleBorderlessWindowed();
+        consoleFont = Raylib.LoadFontEx("resources/NotoSansMono-Regular.ttf", 20, null, 0);
 
         while (!Raylib.WindowShouldClose())
         {
+            if (Raylib.IsMouseButtonDown(MouseButton.Left))
+            {
+                offset += Raylib.GetMouseDelta();
+            }
+
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.FromHSV(0, 0, 0.25f));
-
-            
 
             DrawTile();
 
@@ -31,13 +42,12 @@ internal static class Program
     {
         var bounds = new Rect
         {
-            x = 10,
-            y = 100,
-            width = 1,
-            height = 1
+            position = new Vector2(10 + offset.X, 100 + offset.Y),
+            size = new Vector2(10, 10)
         };
 
         DimLib.DrawRect(bounds, Color.FromHSV(140, 1.00f, 1.00f));
+
     }
 
     static void DrawConsole()
@@ -45,26 +55,20 @@ internal static class Program
         var width = Raylib.GetScreenWidth();
         var height = Raylib.GetScreenHeight();
 
-        var console = new Rect
+        var consolePanel = new Rect
         {
-            x = 3,
-            y = height - 150,
-            width = width - 6,
-            height = 147
-        };
-        var consoleTextArea = new Rect
-        {
-            x = console.x + 6,
-            y = console.y + 6,
-            width = console.width - 12,
-            height = console.height - 12
+            position = new Vector2(3, height - 150),
+            size = new Vector2(width - 6, 147)
         };
 
-        DimLib.DrawRect(console, Color.FromHSV(0, 0, 0.15f));
-        
-        Raylib.DrawText("DimCity", consoleTextArea.width - 60, consoleTextArea.y + consoleTextArea.height - 20, 20, Color.Black);
-        
-        Raylib.DrawText("Hi there", consoleTextArea.x, consoleTextArea.y, 12, Color.FromHSV(218, 0.80f, 0.89f));
-        
+        DimLib.DrawRect(consolePanel, Color.FromHSV(0, 0, 0.15f));
+
+        var label = "DimCity";
+        var labelPosition = new Vector2(consolePanel.size.X - Raylib.MeasureText(label, 20), consolePanel.position.Y + consolePanel.size.Y - 24);
+        var textPosition = new Vector2(consolePanel.position.X + 6, consolePanel.position.Y + 6);
+
+        Raylib.DrawTextEx(Raylib.GetFontDefault(), label, labelPosition, 20, 1, Color.Black);
+        Raylib.DrawTextEx(consoleFont, string.Join("\n", console.Read()), textPosition, 20, 1, Color.FromHSV(218, 0.80f, 0.89f));
+
     }
 }

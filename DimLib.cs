@@ -1,11 +1,12 @@
 using Raylib_cs;
+using System.Numerics;
 
-internal struct Rect { public int x, y, width, height; }
+internal struct Rect { internal Vector2 position, size; }
 
 internal static class DimLib
 {
     internal static void DrawRect(Rect rect, Color color)
     {
-        Raylib.DrawRectangle(rect.x, rect.y, rect.width, rect.height, color);
+        Raylib.DrawRectangleV(rect.position, rect.size, color);
     }
 }
