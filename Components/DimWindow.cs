@@ -11,15 +11,20 @@ internal class DimWindow
     private static DimControls? controls;
     private static Vector2 offset = new(0, 0);
 
+    private static Font notoSansMono;
+
     internal DimWindow()
     {
-        // nothing to see here yet
+        // 
     }
 
     internal void Draw()
     {
         Raylib.InitWindow(1300, 700, "DimCity");
         Raylib.ToggleBorderlessWindowed();
+
+        // this needs to happen after the window is initialized
+        notoSansMono = Raylib.LoadFontEx("resources/NotoSansMono-Regular.ttf", 20, null, 0);
 
         Width = Raylib.GetScreenWidth();
         Height = Raylib.GetScreenHeight();
@@ -31,13 +36,13 @@ internal class DimWindow
         {
             position = new Vector2(margin, Height - 150),
             size = bottomPanelSize,
-        });
+        }, notoSansMono);
 
         console = new DimConsole(new Rect
         {
             position = new Vector2(Width / 2 + margin / 2, Height - 150),
             size = bottomPanelSize,
-        });
+        }, notoSansMono);
 
         console.Write("Welcome to DimCity!");
         console.Write("Click and hold to pan around.");
@@ -50,7 +55,7 @@ internal class DimWindow
             }
 
             Raylib.BeginDrawing();
-            Raylib.ClearBackground(Color.FromHSV(0, 0, 0.25f));
+            Raylib.ClearBackground(Colors.Background);
 
             DrawTile();
 

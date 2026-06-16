@@ -1,22 +1,18 @@
 using System.Numerics;
 using Raylib_cs;
 
-internal class DimConsole
+internal class DimConsole : DimView
 {
     private static Font consoleFont;
-
     private readonly Queue<string> buffer;
 
-    public Rect Bounds { get; private set;}
-
-    internal DimConsole(Rect bounds)
+    internal DimConsole(Rect bounds, Font font) : base(bounds)
     {
-        Bounds = bounds;
-        consoleFont = Raylib.LoadFontEx("resources/NotoSansMono-Regular.ttf", 20, null, 0);
+        consoleFont = font;
         buffer = new Queue<string>(10);
     }
 
-    internal void Draw()
+    internal override void Draw()
     {
         var consolePanel = new Rect
         {
@@ -24,14 +20,14 @@ internal class DimConsole
             size = Bounds.size
         };
 
-        DimLib.DrawRect(consolePanel, Color.FromHSV(0, 0, 0.15f));
+        DimLib.DrawRect(consolePanel, Colors.Panel);
 
         var label = "DimCity";
         var labelPosition = new Vector2(consolePanel.position.X + consolePanel.size.X - Raylib.MeasureText(label, 20), consolePanel.position.Y + consolePanel.size.Y - 24);
         var textPosition = new Vector2(consolePanel.position.X + 6, consolePanel.position.Y + 6);
 
         Raylib.DrawTextEx(Raylib.GetFontDefault(), label, labelPosition, 20, 1, Color.Black);
-        Raylib.DrawTextEx(consoleFont, string.Join("\n", [.. buffer]), textPosition, 20, 1, Color.FromHSV(218, 0.80f, 0.89f));
+        Raylib.DrawTextEx(consoleFont, string.Join("\n", [.. buffer]), textPosition, 20, 1, Colors.ConsoleText);
 
     }
 
