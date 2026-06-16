@@ -3,20 +3,37 @@ using Raylib_cs;
 
 internal static class Program
 {
-    private static readonly Console console = new();
-    private static Font consoleFont;
+    private static DimConsole? console;
+    private static DimControls? controls;
     private static Vector2 offset = new(0, 0);
 
 
 
     public static void Main()
     {
-        console.Write("Welcome to DimCity!");
-        console.Write("Click and hold to pan around.");
+
 
         Raylib.InitWindow(1300, 700, "DimCity");
         Raylib.ToggleBorderlessWindowed();
-        consoleFont = Raylib.LoadFontEx("resources/NotoSansMono-Regular.ttf", 20, null, 0);
+
+        var width = Raylib.GetScreenWidth();
+        var height = Raylib.GetScreenHeight();
+        var margin = 6;
+
+        console = new DimConsole(new Rect
+        {
+            position = new Vector2(margin, height - 150),
+            size = new Vector2(width / 2 - margin - (margin / 2), 150 - margin)
+        });
+
+        controls = new DimControls(new Rect
+        {
+            position = new Vector2(width / 2 + margin / 2, height - 150),
+            size = new Vector2(width / 2 - margin - (margin / 2), 150 - margin)
+        });
+
+        console.Write("Welcome to DimCity!");
+        console.Write("Click and hold to pan around.");
 
         while (!Raylib.WindowShouldClose())
         {
@@ -30,7 +47,8 @@ internal static class Program
 
             DrawTile();
 
-            DrawConsole();
+            console.Draw();
+            controls.Draw();
 
             Raylib.EndDrawing();
         }
@@ -50,25 +68,5 @@ internal static class Program
 
     }
 
-    static void DrawConsole()
-    {
-        var width = Raylib.GetScreenWidth();
-        var height = Raylib.GetScreenHeight();
-
-        var consolePanel = new Rect
-        {
-            position = new Vector2(3, height - 150),
-            size = new Vector2(width - 6, 147)
-        };
-
-        DimLib.DrawRect(consolePanel, Color.FromHSV(0, 0, 0.15f));
-
-        var label = "DimCity";
-        var labelPosition = new Vector2(consolePanel.size.X - Raylib.MeasureText(label, 20), consolePanel.position.Y + consolePanel.size.Y - 24);
-        var textPosition = new Vector2(consolePanel.position.X + 6, consolePanel.position.Y + 6);
-
-        Raylib.DrawTextEx(Raylib.GetFontDefault(), label, labelPosition, 20, 1, Color.Black);
-        Raylib.DrawTextEx(consoleFont, string.Join("\n", console.Read()), textPosition, 20, 1, Color.FromHSV(218, 0.80f, 0.89f));
-
-    }
+    
 }
