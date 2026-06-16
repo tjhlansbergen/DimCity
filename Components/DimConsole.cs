@@ -27,7 +27,7 @@ internal class DimConsole
         DimLib.DrawRect(consolePanel, Color.FromHSV(0, 0, 0.15f));
 
         var label = "DimCity";
-        var labelPosition = new Vector2(consolePanel.size.X - Raylib.MeasureText(label, 20), consolePanel.position.Y + consolePanel.size.Y - 24);
+        var labelPosition = new Vector2(consolePanel.position.X + consolePanel.size.X - Raylib.MeasureText(label, 20), consolePanel.position.Y + consolePanel.size.Y - 24);
         var textPosition = new Vector2(consolePanel.position.X + 6, consolePanel.position.Y + 6);
 
         Raylib.DrawTextEx(Raylib.GetFontDefault(), label, labelPosition, 20, 1, Color.Black);
