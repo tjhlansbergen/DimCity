@@ -9,13 +9,15 @@ internal class DimMenu : DimView
     private Font menuFont;
     private int itemHeight => menuFont.BaseSize + 6;
 
-    internal DimMenu(Rect bounds, Font font, Dictionary<string, Action> items) : base(bounds)
+    internal DimMenu(Rect bounds, Console console, Font font, Dictionary<string, Action> items) : base(bounds, console)
     {
         menuFont = font;
         foreach (var kvp in items)
         {
             MenuItems.Add(new DimMenuItem(kvp.Key, kvp.Value));
         }
+
+        console.Write($"Menu mounted at {bounds}", debug: true);
     }
 
     internal void AddItem(string label, Action action)

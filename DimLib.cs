@@ -9,6 +9,11 @@ internal struct Rect
     {
         return point.X >= position.X && point.X <= position.X + size.X && point.Y >= position.Y && point.Y <= position.Y + size.Y;
     }
+
+    public readonly override string ToString()
+    {
+        return $"Position: ({position.X}, {position.Y}), Size: ({size.X}, {size.Y})";
+    }
 }
 
 internal static class DimLib

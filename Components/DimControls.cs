@@ -5,7 +5,7 @@ internal class DimControls : DimView
 {
     private readonly DimMenu menu;
 
-    internal DimControls(Rect bounds, Font font) : base(bounds)
+    internal DimControls(Rect bounds, Console console, Font font) : base(bounds, console)
     {
         const int padding = 6;
 
@@ -17,9 +17,12 @@ internal class DimControls : DimView
             position = new Vector2(bounds.position.X + padding, bounds.position.Y + padding),
             size = new Vector2(width, bounds.size.Y - 2 * padding)
         }, 
+        console,
         font,
         labels.ToDictionary(e => e, e => (Action)(() => { }))
         );
+
+        console.Write($"Controls mounted at {bounds}", debug: true);
     }
 
     internal override void Draw()

@@ -4,12 +4,12 @@ using Raylib_cs;
 internal class DimConsole : DimView
 {
     private static Font consoleFont;
-    private readonly Queue<string> buffer;
+    
 
-    internal DimConsole(Rect bounds, Font font, int bufferSize) : base(bounds)
+    internal DimConsole(Rect bounds, Console console, Font font) : base(bounds, console)
     {
         consoleFont = font;
-        buffer = new Queue<string>(bufferSize);
+        console.Write($"Console mounted at {bounds}", debug: true);
     }
 
     internal override void Draw()
@@ -27,17 +27,10 @@ internal class DimConsole : DimView
         var textPosition = new Vector2(consolePanel.position.X + 6, consolePanel.position.Y + 6);
 
         Raylib.DrawTextEx(Raylib.GetFontDefault(), label, labelPosition, 20, 1, Color.Black);
-        Raylib.DrawTextEx(consoleFont, string.Join("\n", [.. buffer]), textPosition, 20, 1, Colors.ConsoleText);
+        Raylib.DrawTextEx(consoleFont, string.Join("\n", Console.Read()), textPosition, 20, 1, Colors.ConsoleText);
 
     }
 
-    public void Write(string text)
-    {
-        buffer.Enqueue(text);
-        if (buffer.Count >= buffer.Capacity)
-        {
-            buffer.Dequeue();
-        }
-    }
+
 }
 

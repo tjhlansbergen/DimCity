@@ -4,25 +4,21 @@ using Raylib_cs;
 
 internal class DimWindow
 {
-    public bool Fullscreen { get; private set; }
-    public int Width { get; private set; }
-    public int Height { get; private set; }
+    internal int Width { get; private set; }
+    internal int Height { get; private set; }
 
-    private static DimConsole? console;
-    private static DimControls? controls;
+    internal Console console = new(6);
+
+    internal DimConsole consolePanel;
+    internal DimControls controlsPanel;
     private static Vector2 offset = new(0, 0);
     private static Font notoSansMono;
     private const int horizon = 150;
 
     internal DimWindow(bool fullscreen)
     {
-        Fullscreen = fullscreen;
-    }
-
-    internal void Draw()
-    {
         Raylib.InitWindow(1600, 900, "DimCity");
-        if (Fullscreen)
+        if (fullscreen)
         {
             Raylib.ToggleFullscreen();
         }
@@ -36,23 +32,30 @@ internal class DimWindow
         var margin = 6;
         var bottomPanelSize = new Vector2(Width / 2 - margin - (margin / 2), horizon - margin);
 
-        controls = new DimControls(new Rect
-        {
-            position = new Vector2(margin, Height - horizon),
-            size = bottomPanelSize,
-        }, notoSansMono);
-
-        console = new DimConsole(new Rect
+        consolePanel = new DimConsole(new Rect
         {
             position = new Vector2(Width / 2 + margin / 2, Height - horizon),
             size = bottomPanelSize,
-        },
-        notoSansMono,
-        6);
+        }, console, notoSansMono);
 
+        controlsPanel = new DimControls(new Rect
+        {
+            position = new Vector2(margin, Height - horizon),
+            size = bottomPanelSize,
+        }, console, notoSansMono);
+
+        console.Write(string.Empty);
         console.Write("Welcome to DimCity!");
         console.Write("Click and hold to pan around.");
+    }
 
+    internal void Write(string message)
+    {
+        console.Write(message);
+    }
+
+    internal void Draw()
+    {
         while (!Raylib.WindowShouldClose())
         {
             DispatchInput();
@@ -62,8 +65,8 @@ internal class DimWindow
 
             DrawTile();
 
-            controls.Draw();
-            console.Draw();
+            controlsPanel.Draw();
+            consolePanel.Draw();
 
 
             Raylib.EndDrawing();
@@ -100,7 +103,7 @@ internal class DimWindow
 
     private void HandleControlsInput()
     {
-        controls?.Click(Raylib.GetMousePosition());
+        controlsPanel?.Click(Raylib.GetMousePosition());
     }
 
     private static void DrawTile()
