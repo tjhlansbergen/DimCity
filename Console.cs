@@ -2,9 +2,9 @@ internal class Console
 {
     private readonly Queue<string> buffer;
 
-    internal Console(int bufferSize)
+    internal Console()
     {
-        buffer = new Queue<string>(bufferSize);
+        buffer = new Queue<string>(100);
     }
 
     internal void Write(string text, bool debug = false)
@@ -21,8 +21,8 @@ internal class Console
         }
     }
 
-    internal string[] Read()
+    internal string[] Read(int from, int count)
     {
-        return [.. buffer];
+        return [.. buffer.Skip(from).Take(count)];
     }
 }

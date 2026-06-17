@@ -4,7 +4,9 @@ using Raylib_cs;
 internal class DimConsole : DimView
 {
     private static Font consoleFont;
-    
+    private const int maxLines = 6;
+
+    private int index = 0;  // counterintuatively this counts from the 'bottom' 
 
     internal DimConsole(Rect bounds, Console console, Font font) : base(bounds, console)
     {
@@ -27,10 +29,8 @@ internal class DimConsole : DimView
         var textPosition = new Vector2(consolePanel.position.X + 6, consolePanel.position.Y + 6);
 
         Raylib.DrawTextEx(Raylib.GetFontDefault(), label, labelPosition, 20, 1, Color.Black);
-        Raylib.DrawTextEx(consoleFont, string.Join("\n", Console.Read()), textPosition, 20, 1, Colors.ConsoleText);
+        Raylib.DrawTextEx(consoleFont, string.Join("\n", Console.Read(index, maxLines)), textPosition, 20, 1, Colors.ConsoleText);
 
     }
-
-
 }
 

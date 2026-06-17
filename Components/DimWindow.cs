@@ -7,7 +7,7 @@ internal class DimWindow
     internal int Width { get; private set; }
     internal int Height { get; private set; }
 
-    internal Console console = new(6);
+    internal Console console = new();
 
     internal DimConsole consolePanel;
     internal DimControls controlsPanel;
@@ -80,7 +80,7 @@ internal class DimWindow
         // single click
         if (Raylib.IsMouseButtonReleased(MouseButton.Left))
         {
-            if (Raylib.GetMouseX() < Width / 2)
+            if (Raylib.GetMouseY() > Height - horizon && Raylib.GetMouseX() < Width / 2)
             {
                 HandleControlsInput();
             }
