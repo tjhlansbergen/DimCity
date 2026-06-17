@@ -4,6 +4,7 @@ using Raylib_cs;
 
 internal class DimWindow
 {
+    public bool Fullscreen { get; private set; }
     public int Width { get; private set; }
     public int Height { get; private set; }
 
@@ -13,15 +14,18 @@ internal class DimWindow
 
     private static Font notoSansMono;
 
-    internal DimWindow()
+    internal DimWindow(bool fullscreen)
     {
-        // 
+        Fullscreen = fullscreen;
     }
 
     internal void Draw()
     {
-        Raylib.InitWindow(1300, 700, "DimCity");
-        Raylib.ToggleBorderlessWindowed();
+        Raylib.InitWindow(1600, 900, "DimCity");
+        if (Fullscreen)
+        {
+            Raylib.ToggleFullscreen();
+        }
 
         // this needs to happen after the window is initialized
         notoSansMono = Raylib.LoadFontEx("resources/NotoSansMono-Regular.ttf", 20, null, 0);
