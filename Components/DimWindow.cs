@@ -11,8 +11,8 @@ internal class DimWindow
     private static DimConsole? console;
     private static DimControls? controls;
     private static Vector2 offset = new(0, 0);
-
     private static Font notoSansMono;
+    private const int horizon = 150;
 
     internal DimWindow(bool fullscreen)
     {
@@ -34,29 +34,28 @@ internal class DimWindow
         Height = Raylib.GetScreenHeight();
 
         var margin = 6;
-        var bottomPanelSize = new Vector2(Width / 2 - margin - (margin / 2), 150 - margin);
+        var bottomPanelSize = new Vector2(Width / 2 - margin - (margin / 2), horizon - margin);
 
         controls = new DimControls(new Rect
         {
-            position = new Vector2(margin, Height - 150),
+            position = new Vector2(margin, Height - horizon),
             size = bottomPanelSize,
         }, notoSansMono);
 
         console = new DimConsole(new Rect
         {
-            position = new Vector2(Width / 2 + margin / 2, Height - 150),
+            position = new Vector2(Width / 2 + margin / 2, Height - horizon),
             size = bottomPanelSize,
-        }, notoSansMono);
+        },
+        notoSansMono,
+        6);
 
         console.Write("Welcome to DimCity!");
         console.Write("Click and hold to pan around.");
 
         while (!Raylib.WindowShouldClose())
         {
-            if (Raylib.IsMouseButtonDown(MouseButton.Left))
-            {
-                offset += Raylib.GetMouseDelta();
-            }
+            DispatchInput();
 
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Colors.Background);
@@ -71,6 +70,37 @@ internal class DimWindow
         }
 
         Raylib.CloseWindow();
+    }
+
+    private void DispatchInput()
+    {
+        // single click
+        if (Raylib.IsMouseButtonReleased(MouseButton.Left))
+        {
+            if (Raylib.GetMouseX() < Width / 2)
+            {
+                HandleControlsInput();
+            }
+        }
+
+        // click 'n drag
+        if (Raylib.IsMouseButtonDown(MouseButton.Left))
+        {
+            if (Raylib.GetMouseY() < Height - horizon)
+            {
+                HandleMapInput();
+            }
+        }
+    }
+
+    private void HandleMapInput()
+    {
+        offset += Raylib.GetMouseDelta();
+    }
+
+    private void HandleControlsInput()
+    {
+        controls?.Click(Raylib.GetMousePosition());
     }
 
     private static void DrawTile()

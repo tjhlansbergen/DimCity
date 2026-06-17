@@ -6,10 +6,10 @@ internal class DimConsole : DimView
     private static Font consoleFont;
     private readonly Queue<string> buffer;
 
-    internal DimConsole(Rect bounds, Font font) : base(bounds)
+    internal DimConsole(Rect bounds, Font font, int bufferSize) : base(bounds)
     {
         consoleFont = font;
-        buffer = new Queue<string>(10);
+        buffer = new Queue<string>(bufferSize);
     }
 
     internal override void Draw()
@@ -34,7 +34,7 @@ internal class DimConsole : DimView
     public void Write(string text)
     {
         buffer.Enqueue(text);
-        if (buffer.Count > 10)
+        if (buffer.Count >= buffer.Capacity)
         {
             buffer.Dequeue();
         }
