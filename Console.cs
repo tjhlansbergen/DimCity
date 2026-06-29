@@ -21,8 +21,8 @@ internal class Console
         }
     }
 
-    internal string[] Read(int from, int count)
+    internal string[] Read(int count)
     {
-        return [.. buffer.Skip(from).Take(count)];
+        return [.. buffer.Skip(buffer.Count - count).Take(count)];
     }
 }

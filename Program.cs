@@ -4,7 +4,7 @@ internal static class Program
     public static void Main(string[] args)
     {
         bool fullscreen = false;
-        if (args.Length > 0 && args[0].Trim().ToLowerInvariant() == "-fs")
+        if (args.Length > 0 && args[0].Trim().ToLowerInvariant() == "fs")
         {
             fullscreen = true;
         }
