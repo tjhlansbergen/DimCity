@@ -8,6 +8,7 @@ internal static class Colors
     internal static readonly Color PinStripe = Color.FromHSV(0, 0, 0.65f);
     internal static readonly Color MenuItemSelected = Color.FromHSV(218, 0.80f, 0.89f);
     
+    internal static readonly Color GridItem = Color.FromHSV(0, 0, 0.10f);
 
 
     // text

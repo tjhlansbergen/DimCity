@@ -8,7 +8,9 @@ internal class DimGrid : DimView
     public string SelectedLabel => Items[SelectedIndex].Label;
 
     private Font menuFont;
-    private int itemHeight => menuFont.BaseSize + 6;
+    private int itemHeight => menuFont.BaseSize + (2*padding);
+
+    internal static readonly int padding = 10;
 
     internal DimGrid(Rect bounds, Console console, Font font, Dictionary<string, Action> items) : base(bounds, console)
     {
@@ -30,7 +32,7 @@ internal class DimGrid : DimView
     {
         for (int i = 0; i < Items.Count; i++)
         {
-            Items[i].Draw(new Vector2(Bounds.position.X, Bounds.position.Y + i * itemHeight), menuFont, i == SelectedIndex);
+            Items[i].Draw(ItemBounds(i), menuFont, i == SelectedIndex);
         }
     }
 
@@ -38,20 +40,23 @@ internal class DimGrid : DimView
     {
         for (int i = 0; i < Items.Count; i++)
         {
-            var itemBounds = new Rect
-            {
-                position = new Vector2(Bounds.position.X, Bounds.position.Y + i * itemHeight),
-                size = new Vector2(Bounds.size.X, itemHeight)
-            };
-
-            if (itemBounds.Contains(mousePosition))
+            if (ItemBounds(i).Contains(mousePosition))
             {
                 SelectedIndex = i;
                 Items[i].Action?.Invoke();
                 break;
             }
         }
-    }   
+    }
+
+    private Rect ItemBounds(int i)
+    {
+        return new Rect
+        {
+            position = new Vector2(Bounds.position.X, Bounds.position.Y + i * itemHeight),
+            size = new Vector2(Bounds.size.X, itemHeight)
+        };
+    }
 }
 
 internal class DimGridItem
@@ -65,9 +70,10 @@ internal class DimGridItem
         this.Action = Action;
     }
 
-    internal void Draw(Vector2 position, Font font, bool selected)
+    internal void Draw(Rect bounds, Font font, bool selected)
     {
         // todo: draw icon
-        Raylib.DrawTextEx(font, Label, new Vector2(position.X + 8, position.Y), 20, 1, selected ? Colors.MenuTextSelected : Colors.MenuText);
+        DimLib.DrawRectWithOutline(bounds.Shrink(DimGrid.padding), Colors.GridItem, Colors.PinStripe, 1);
+        Raylib.DrawTextEx(font, Label, new Vector2(bounds.position.X + 8, bounds.position.Y), 20, 1, selected ? Colors.MenuTextSelected : Colors.MenuText);
     }
 }

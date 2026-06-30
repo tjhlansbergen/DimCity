@@ -7,3 +7,5 @@ dotnet run -- fs
 
 # Shut down:
 Esc
+
+https://www.raylib.com/cheatsheet/cheatsheet.html

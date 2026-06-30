@@ -14,6 +14,15 @@ internal struct Rect
     {
         return $"Position: ({position.X}, {position.Y}), Size: ({size.X}, {size.Y})";
     }
+
+    public Rect Shrink(int padding)
+    {
+        return new Rect
+        {
+            position = new Vector2(position.X + padding, position.Y + padding),
+            size = new Vector2(size.X - (2*padding), size.Y - (2*padding)),
+        };
+    }
 }
 
 internal static class DimLib
@@ -21,5 +30,11 @@ internal static class DimLib
     internal static void DrawRect(Rect rect, Color color)
     {
         Raylib.DrawRectangleV(rect.position, rect.size, color);
+    }
+
+    internal static void DrawRectWithOutline(Rect rect, Color fillColor, Color outlineColor, int outlineThickness)
+    {
+        Raylib.DrawRectangleV(rect.position, rect.size, fillColor);
+        Raylib.DrawRectangleLinesEx(new Rectangle(rect.position.X, rect.position.Y, rect.size.X, rect.size.Y), outlineThickness, outlineColor);
     }
 }
