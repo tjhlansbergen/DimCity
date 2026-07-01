@@ -14,6 +14,7 @@ internal class DimWindow
     private static Vector2 offset = new(0, 0);
     private static Font notoSansMono;
     private const int horizon = 150;
+    public static readonly int fontSize = 20;
 
     internal DimWindow(bool fullscreen)
     {
@@ -24,7 +25,7 @@ internal class DimWindow
         }
 
         // this needs to happen after the window is initialized
-        notoSansMono = Raylib.LoadFontEx("resources/NotoSansMono-Regular.ttf", 20, null, 0);
+        notoSansMono = Raylib.LoadFontEx("resources/NotoSansMono-Regular.ttf", fontSize, null, 0);
 
         Width = Raylib.GetScreenWidth();
         Height = Raylib.GetScreenHeight();

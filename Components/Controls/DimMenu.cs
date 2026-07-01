@@ -71,6 +71,6 @@ internal class DimMenuItem
     internal void Draw(Vector2 position, Font font, bool selected)
     {
         DimLib.DrawRect(new Rect { position = position, size = new Vector2(3, font.BaseSize) }, selected ? Colors.MenuItemSelected : Colors.Panel);
-        Raylib.DrawTextEx(font, Label, new Vector2(position.X + 8, position.Y), 20, 1, selected ? Colors.MenuTextSelected : Colors.MenuText);
+        Raylib.DrawTextEx(font, Label, new Vector2(position.X + 8, position.Y), DimWindow.fontSize, 1, selected ? Colors.MenuTextSelected : Colors.MenuText);
     }
 }
