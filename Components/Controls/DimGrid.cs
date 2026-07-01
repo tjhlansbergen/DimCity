@@ -15,25 +15,20 @@ internal class DimGrid : DimView
     public static readonly int padding = 4;
     const int margin = 4;
 
-    internal DimGrid(Rect bounds, Console console, Font font, Dictionary<string, Action> items, int columns = 3) : base(bounds, console)
+    internal DimGrid(Rect bounds, Console console, Font font, int columns = 3) : base(bounds, console)
     {
         menuFont = font;
         Columns = columns;
 
         itemSize = new Vector2((Bounds.size.X - ((columns + 1) * margin)) / columns, menuFont.BaseSize + (2 * padding) + (2 * margin));
-
-        foreach (var kvp in items)
-        {
-            Items.Add(Items.Count, new DimGridItem(kvp.Key, kvp.Value));
-        }
-
         console.Write($"Grid mounted at {bounds}", debug: true);
     }
 
-    internal void AddItem(string label, Action action)
+    internal void AddItem(string label, Action action, Action<Rect, bool> icon)
     {
-        Items.Add(Items.Count, new DimGridItem(label, action));
-    }
+        Items.Add(Items.Count, new DimGridItem(label, action, icon));
+    }           
+
 
     internal override void Draw()
     {
@@ -72,12 +67,14 @@ internal class DimGrid : DimView
 internal class DimGridItem
 {
     public string Label { get; set; } = string.Empty;
+    public Action<Rect, bool> Icon { get; set; } = (bounds, selected) => { };
     public Action? Action { get; private set; }
 
-    internal DimGridItem(string Label, Action? Action)
+    internal DimGridItem(string Label, Action? Action, Action<Rect, bool> Icon)
     {     
         this.Label = Label;
         this.Action = Action;
+        this.Icon = Icon;
     }
 
     internal void Draw(Rect bounds, Font font, bool selected)
@@ -88,7 +85,7 @@ internal class DimGridItem
         DimLib.DrawRectWithOutline(bounds, Colors.GridItem, Colors.PinStripe, 1);
         
         // icon
-        Icons.Rail(new Rect { 
+        Icon(new Rect { 
             position = new Vector2(bounds.position.X + DimGrid.padding, bounds.position.Y + DimGrid.padding), 
             size = new Vector2(iconSize, iconSize) 
         }, selected);
