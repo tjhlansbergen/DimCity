@@ -7,21 +7,29 @@ internal static class Enumerations
         Zoning,
     }
 
-    internal enum TransportationType
+    internal enum BuildingType
     {
+        Selection,
+
         Road,
         Rail,
-    }
-
-    internal enum UtilityType
-    {
-        Power,
-    }
-
-    internal enum ZoningType
-    {
+        
         Residential,
         Commercial,
         Industrial,
+
+        Power,
     }
+
+    internal static BuildingType[] BuildingTypesByCategory(BuildingCategory category)
+    {
+        return category switch
+        {
+            BuildingCategory.Transportation => [BuildingType.Road, BuildingType.Rail],
+            BuildingCategory.Utilities => [BuildingType.Power],
+            BuildingCategory.Zoning => [BuildingType.Residential, BuildingType.Commercial, BuildingType.Industrial],
+            _ => [BuildingType.Selection],
+        };
+    }
+
 }

@@ -9,9 +9,12 @@ internal class DimWindow
 
     internal Console console = new();
 
+    internal DimMap map;
     internal DimConsole consolePanel;
     internal DimControls controlsPanel;
-    private static Vector2 offset = new(0, 0);
+    internal DimSelection selectionPanel;
+
+    
     private static Font notoSansMono;
     private const int horizon = 150;
     public static readonly int fontSize = 20;
@@ -33,6 +36,12 @@ internal class DimWindow
         var margin = 6;
         var bottomPanelSize = new Vector2(Width / 2 - margin - (margin / 2), horizon - margin);
 
+        map = new DimMap(new Rect
+        {
+            position = new Vector2(0, 0),
+            size = new Vector2(Width, Height),
+        }, console);
+
         consolePanel = new DimConsole(new Rect
         {
             position = new Vector2(Width / 2 + margin / 2, Height - horizon),
@@ -44,6 +53,12 @@ internal class DimWindow
             position = new Vector2(margin, Height - horizon),
             size = bottomPanelSize,
         }, console, notoSansMono);
+
+        selectionPanel = new DimSelection(new Rect
+        {
+            position = new Vector2(margin, Height - horizon - 32 - margin),
+            size = new Vector2(32, 32),
+        }, console);
 
         console.Write(string.Empty);
         console.Write("Welcome to DimCity!");
@@ -64,11 +79,11 @@ internal class DimWindow
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Colors.Background);
 
-            DrawTile();
-
+            
+            map.Draw();
             controlsPanel.Draw();
             consolePanel.Draw();
-
+            selectionPanel.Draw();
 
             Raylib.EndDrawing();
         }
@@ -99,7 +114,7 @@ internal class DimWindow
 
     private void HandleMapInput()
     {
-        offset += Raylib.GetMouseDelta();
+        map.Offset += Raylib.GetMouseDelta();
     }
 
     private void HandleControlsInput()
@@ -107,15 +122,5 @@ internal class DimWindow
         controlsPanel?.Click(Raylib.GetMousePosition());
     }
 
-    private static void DrawTile()
-    {
-        var bounds = new Rect
-        {
-            position = new Vector2(10 + offset.X, 100 + offset.Y),
-            size = new Vector2(10, 10)
-        };
 
-        DimLib.DrawRect(bounds, Color.FromHSV(140, 1.00f, 1.00f));
-
-    }
 }

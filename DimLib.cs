@@ -23,6 +23,15 @@ internal struct Rect
             size = new Vector2(size.X - (2*padding), size.Y - (2*padding)),
         };
     }
+
+        public Rect Move(Vector2 offset)
+    {
+        return new Rect
+        {
+            position = new Vector2(position.X + offset.X, position.Y + offset.Y),
+            size = size,
+        };
+    }
 }
 
 internal static class DimLib

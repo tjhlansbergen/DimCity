@@ -1,12 +1,10 @@
-using System.Data.Common;
 using System.Numerics;
 using Raylib_cs;
 
 internal class DimGrid : DimView
 {
     public Dictionary<int, DimGridItem> Items { get; private set; } = [];
-    public int SelectedIndex { get; private set; } = 0;
-    public string SelectedLabel => Items[SelectedIndex].Label;
+    public int? SelectedIndex { get; private set; } = null;
     public int Columns { get; private set; }
 
     private Font menuFont;
@@ -82,7 +80,7 @@ internal class DimGridItem
         var iconSize = bounds.size.Y - (2*DimGrid.padding);
 
         // tile
-        DimLib.DrawRectWithOutline(bounds, Colors.GridItem, Colors.PinStripe, 1);
+        DimLib.DrawRectWithOutline(bounds, Colors.GridItem, selected ? Colors.MenuTextSelected : Colors.PinStripeModerate, 1);
         
         // icon
         Icon(new Rect { 
