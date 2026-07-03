@@ -3,24 +3,24 @@ using Raylib_cs;
 
 internal class DimControls : DimView
 {
-    private readonly DimMenu menu;
-    private readonly Dictionary<string, DimGrid> tabs = new();
+    public DimMenu Menu { get; private set; }
+    public Dictionary<string, DimGrid> Tabs { get; private set; } = [];
     const int padding = 6;
 
     internal DimControls(Rect bounds, Console console, Font font, Action<Enumerations.BuildingType> onSelectionChanged) : base(bounds, console)
     {
         var split = Enum.GetNames<Enumerations.BuildingCategory>().Max(label => Raylib.MeasureText(label, 20)) + padding;
 
-        tabs = BuildTabs(bounds, console, font, split, onSelectionChanged);
+        Tabs = BuildTabs(bounds, console, font, split, onSelectionChanged);
         
-        menu = new DimMenu(new Rect
+        Menu = new DimMenu(new Rect
         {
             position = new Vector2(bounds.position.X + padding, bounds.position.Y + padding),
             size = new Vector2(split, bounds.size.Y - 2 * padding)
         }, 
         console,
         font,
-        tabs.ToDictionary(e => e.Key, e => (Action)(() => {console.Write($"Selected {e.Key}"); }))
+        Tabs.ToDictionary(e => e.Key, e => (Action)(() => {console.Write($"Selected {e.Key}"); }))
         );
 
         
@@ -38,18 +38,18 @@ internal class DimControls : DimView
 
         DimLib.DrawRect(controlsPanel, Colors.Panel);
         
-        menu.Draw();
-        tabs[menu.SelectedLabel].Draw();
+        Menu.Draw();
+        Tabs[Menu.SelectedLabel].Draw();
     }
 
     internal void Click(Vector2 mousePosition)
     {
-        if (menu.Bounds.Contains(mousePosition))
+        if (Menu.Bounds.Contains(mousePosition))
         {
-            menu.Click(mousePosition);
+            Menu.Click(mousePosition);
         }
 
-        tabs[menu.SelectedLabel].Click(mousePosition);
+        Tabs[Menu.SelectedLabel].Click(mousePosition);
     }
 
     internal static Dictionary<string, DimGrid> BuildTabs(Rect bounds, Console console, Font font, int split, Action<Enumerations.BuildingType> _onSelectionChanged)
@@ -65,7 +65,10 @@ internal class DimControls : DimView
         foreach (var label in Enum.GetValues<Enumerations.BuildingCategory>())
         {
             switch (label)
-            {          
+            {
+                case Enumerations.BuildingCategory.None:
+                    result.Add("^", new None(itemBounds, console, font, _onSelectionChanged));
+                    break;          
                 case Enumerations.BuildingCategory.Transportation:
                     result.Add(Enum.GetName(label)!, new Transportation(itemBounds, console, font, _onSelectionChanged));
                     break;

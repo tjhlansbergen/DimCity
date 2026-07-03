@@ -4,7 +4,7 @@ using Raylib_cs;
 internal class DimGrid : DimView
 {
     public Dictionary<int, DimGridItem> Items { get; private set; } = [];
-    public int? SelectedIndex { get; private set; } = null;
+    public int? SelectedIndex { get; set; } = null;
     public int Columns { get; private set; }
 
     private Font menuFont;

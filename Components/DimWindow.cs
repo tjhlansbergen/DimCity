@@ -59,7 +59,7 @@ internal class DimWindow
             position = new Vector2(margin, Height - horizon - 32 - margin),
             size = new Vector2(32, 32),
         }, console);
-
+        
         console.Write(string.Empty);
         console.Write("Welcome to DimCity!");
         console.Write("Click and hold to pan around.");
@@ -124,6 +124,10 @@ internal class DimWindow
 
     private void SelectionChanged(Enumerations.BuildingType type)
     {
+        // reset previous selection
+        controlsPanel.Tabs.Where(tab => tab.Key != controlsPanel.Menu.SelectedLabel).ToList().ForEach(tab => tab.Value.SelectedIndex = null);
+                
+        // set new selection
         selectionPanel.SelectedBuildingType = type;
         map.SelectedBuildingType = type;
 

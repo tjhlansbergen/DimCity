@@ -24,7 +24,7 @@ internal struct Rect
         };
     }
 
-        public Rect Move(Vector2 offset)
+    public Rect Move(Vector2 offset)
     {
         return new Rect
         {

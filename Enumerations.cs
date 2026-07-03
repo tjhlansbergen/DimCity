@@ -2,6 +2,7 @@ internal static class Enumerations
 {
     internal enum BuildingCategory
     {
+        None,
         Transportation,
         Utilities,
         Zoning,

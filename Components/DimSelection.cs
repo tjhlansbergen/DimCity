@@ -14,7 +14,7 @@ internal class DimSelection : DimView
     {
         DimLib.DrawRect(Bounds, Colors.Panel);
 
-        var iconBounds = Bounds.Shrink(4);
+        var iconBounds = Bounds.Shrink(5);
         IconForBuildingType(SelectedBuildingType)(iconBounds, true);
     }
 
