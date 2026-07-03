@@ -7,11 +7,11 @@ internal class DimControls : DimView
     private readonly Dictionary<string, DimGrid> tabs = new();
     const int padding = 6;
 
-    internal DimControls(Rect bounds, Console console, Font font) : base(bounds, console)
+    internal DimControls(Rect bounds, Console console, Font font, Action<Enumerations.BuildingType> onSelectionChanged) : base(bounds, console)
     {
         var split = Enum.GetNames<Enumerations.BuildingCategory>().Max(label => Raylib.MeasureText(label, 20)) + padding;
 
-        tabs = BuildTabs(bounds, console, font, split);
+        tabs = BuildTabs(bounds, console, font, split, onSelectionChanged);
         
         menu = new DimMenu(new Rect
         {
@@ -22,6 +22,8 @@ internal class DimControls : DimView
         font,
         tabs.ToDictionary(e => e.Key, e => (Action)(() => {console.Write($"Selected {e.Key}"); }))
         );
+
+        
 
         console.Write($"Controls mounted at {bounds}", debug: true);
     }
@@ -50,7 +52,7 @@ internal class DimControls : DimView
         tabs[menu.SelectedLabel].Click(mousePosition);
     }
 
-    internal static Dictionary<string, DimGrid> BuildTabs(Rect bounds, Console console, Font font, int split)
+    internal static Dictionary<string, DimGrid> BuildTabs(Rect bounds, Console console, Font font, int split, Action<Enumerations.BuildingType> _onSelectionChanged)
     {
         var result = new Dictionary<string, DimGrid>();
 
@@ -62,12 +64,10 @@ internal class DimControls : DimView
 
         foreach (var label in Enum.GetValues<Enumerations.BuildingCategory>())
         {
-
-
             switch (label)
             {          
                 case Enumerations.BuildingCategory.Transportation:
-                    result.Add(Enum.GetName(label)!, new Transportation(itemBounds, console, font));
+                    result.Add(Enum.GetName(label)!, new Transportation(itemBounds, console, font, _onSelectionChanged));
                     break;
                 case Enumerations.BuildingCategory.Utilities:
                     result.Add(Enum.GetName(label)!, new DimGrid(itemBounds, console, font, new()));

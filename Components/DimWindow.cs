@@ -52,7 +52,7 @@ internal class DimWindow
         {
             position = new Vector2(margin, Height - horizon),
             size = bottomPanelSize,
-        }, console, notoSansMono);
+        }, console, notoSansMono, SelectionChanged);
 
         selectionPanel = new DimSelection(new Rect
         {
@@ -122,5 +122,12 @@ internal class DimWindow
         controlsPanel?.Click(Raylib.GetMousePosition());
     }
 
+    private void SelectionChanged(Enumerations.BuildingType type)
+    {
+        selectionPanel.SelectedBuildingType = type;
+        map.SelectedBuildingType = type;
+
+        console.Write($"Selected {type}");
+    }
 
 }
