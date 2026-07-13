@@ -136,7 +136,6 @@ internal class DimWindow
                 
         // set new selection
         selectionPanel.SelectedBuildingType = type;
-        map.SelectedBuildingType = type;
 
         console.Write($"Selected {type}");
     }

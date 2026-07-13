@@ -4,9 +4,7 @@ using Raylib_cs;
 internal class DimMap : DimView
 {
     public Vector2 Offset { get; set; } = new(0, 0);
-
-    public Enumerations.BuildingType SelectedBuildingType { get; set; } = Enumerations.BuildingType.Selection;
-      
+  
     internal DimMap(Rect bounds, Console console) : base(bounds, console)
     {
         console.Write($"Map mounted at {bounds}", debug: true);
