@@ -12,18 +12,18 @@ internal class DimControls : DimView
         var split = Enum.GetNames<Enumerations.BuildingCategory>().Max(label => Raylib.MeasureText(label, 20)) + padding;
 
         Tabs = BuildTabs(bounds, console, font, split, onSelectionChanged);
-        
+
         Menu = new DimMenu(new Rect
         {
             position = new Vector2(bounds.position.X + padding, bounds.position.Y + padding),
             size = new Vector2(split, bounds.size.Y - 2 * padding)
-        }, 
+        },
         console,
         font,
-        Tabs.ToDictionary(e => e.Key, e => (Action)(() => {console.Write($"Selected {e.Key}"); }))
+        Tabs.ToDictionary(e => e.Key, e => (Action)(() => { console.Write($"Selected {(e.Key == "^" ? "Home" : e.Key)}"); }))
         );
 
-        
+
 
         console.Write($"Controls mounted at {bounds}", debug: true);
     }
@@ -37,7 +37,7 @@ internal class DimControls : DimView
         };
 
         DimLib.DrawRect(controlsPanel, Colors.Panel);
-        
+
         Menu.Draw();
         Tabs[Menu.SelectedLabel].Draw();
     }
@@ -68,7 +68,10 @@ internal class DimControls : DimView
             {
                 case Enumerations.BuildingCategory.None:
                     result.Add("^", new None(itemBounds, console, font, _onSelectionChanged));
-                    break;          
+                    break;
+                case Enumerations.BuildingCategory.Terraform:
+                    result.Add(Enum.GetName(label)!, new Terraform(itemBounds, console, font, _onSelectionChanged));
+                    break;
                 case Enumerations.BuildingCategory.Transportation:
                     result.Add(Enum.GetName(label)!, new Transportation(itemBounds, console, font, _onSelectionChanged));
                     break;

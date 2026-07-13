@@ -22,6 +22,9 @@ internal class DimSelection : DimView
     {
         return buildingType switch
         {
+            Enumerations.BuildingType.Water => Icons.Water,
+            Enumerations.BuildingType.Mountains => Icons.Mountains,
+            Enumerations.BuildingType.Forest => Icons.Forest,
             Enumerations.BuildingType.Road => Icons.Road,
             Enumerations.BuildingType.Rail => Icons.Rail,
             Enumerations.BuildingType.Selection => Icons.Selection,

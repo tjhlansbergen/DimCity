@@ -16,14 +16,44 @@ internal static class Icons
         _transport(bounds, Colors.Road);
     }
 
+    // Terraform
+    internal static void Water(Rect bounds, bool selected)
+    {
+        DimLib.DrawRectWithOutline(bounds, Colors.Background, selected ? Colors.PinStripe : Colors.PinStripeModerate, 1);
+        _terraform(bounds, Colors.Water);
+    }
+
+    internal static void Mountains(Rect bounds, bool selected)
+    {
+        DimLib.DrawRectWithOutline(bounds, Colors.Background, selected ? Colors.PinStripe : Colors.PinStripeModerate, 1);
+        _terraform(bounds, Colors.Mountains);
+    }
+
+    internal static void Forest(Rect bounds, bool selected)
+    {
+        DimLib.DrawRectWithOutline(bounds, Colors.Background, selected ? Colors.PinStripe : Colors.PinStripeModerate, 1);
+        _terraform(bounds, Colors.Forest);
+    }
+
     private static void _transport(Rect bounds, Color color)
     {
-        int thickness = 6;
+        const int thickness = 6;
 
         DimLib.DrawRect(new Rect
         {
             position = new Vector2(bounds.position.X + 1, bounds.position.Y + bounds.size.Y / 2 - thickness / 2),
             size = new Vector2(bounds.size.X - 2, thickness)
+        }, color);
+    }
+
+    private static void _terraform(Rect bounds, Color color)
+    {
+        const int padding = 4;
+
+        DimLib.DrawRect(new Rect
+        {
+            position = new Vector2(bounds.position.X + padding, bounds.position.Y + padding),
+            size = new Vector2(bounds.size.X - padding * 2, bounds.size.Y - padding * 2)
         }, color);
     }
 

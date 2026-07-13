@@ -133,5 +133,4 @@ internal class DimWindow
 
         console.Write($"Selected {type}");
     }
-
 }
