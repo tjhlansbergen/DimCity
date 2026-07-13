@@ -114,7 +114,14 @@ internal class DimWindow
 
     private void HandleMapInput()
     {
-        map.Offset += Raylib.GetMouseDelta();
+        switch (selectionPanel.SelectedBuildingType)
+        {
+            case Enumerations.BuildingType.Selection:
+                map.Offset += Raylib.GetMouseDelta();
+                break;
+            default:
+                break;
+        }
     }
 
     private void HandleControlsInput()
