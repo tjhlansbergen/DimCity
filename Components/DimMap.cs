@@ -17,13 +17,18 @@ internal class DimMap : DimView
        
     private void DrawTile()
     {
-        var bounds = new Rect
+        for (int x = 1; x < 6; x++)
         {
-            position = new Vector2(10 + Offset.X, 100 + Offset.Y),
-            size = new Vector2(10, 10)
-        };
 
-        DimLib.DrawRect(bounds, Color.FromHSV(140, 1.00f, 1.00f));
+            var bounds = new Rect
+            {
+                position = new Vector2(x * 32 + Offset.X, 50 + Offset.Y),
+                size = new Vector2(x*4, x*4)
+            };
+
+            DimLib.DrawRect(bounds, Color.FromHSV(140, 1.00f, 1.00f));
+            
+        }
 
     }
 }
