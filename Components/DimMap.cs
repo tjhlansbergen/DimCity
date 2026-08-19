@@ -4,10 +4,10 @@ using Raylib_cs;
 internal class DimMap : DimView
 {
     public Vector2 Offset { get; set; } = new(0, 0);
-    private int Zoom { get; set; } = 1;
+    private int Zoom { get; set; } = minZoom;
 
-    private const int minZoom = 1;
-    private const int maxZoom = 6;
+    private const int minZoom = 4;
+    private const int maxZoom = 32;
   
     internal DimMap(Rect bounds, Console console) : base(bounds, console)
     {
@@ -16,26 +16,25 @@ internal class DimMap : DimView
 
     internal override void Draw()
     {
-        DrawTile();     // temporary, just to show that the map is moving when you click and drag
+        DrawTiles();
     }
        
-    private void DrawTile()
+    private void DrawTiles()
     {
-        for (int x = 1; x < 6; x++)
-        {
+        // todo: move
+        var tiles = new DimCity().Tiles;
 
+        foreach (var tile in tiles)
+        {
             var bounds = new Rect
             {
-                position = new Vector2(x * 32 + Offset.X, 50 + Offset.Y),
-                size = new Vector2(Zoom*4, Zoom*4)
+                position = new Vector2(tile.Key.X * Zoom + Offset.X, tile.Key.Y * Zoom + Offset.Y),
+                size = new Vector2(Zoom, Zoom)
             };
 
-
             // placeholder
-            DimLib.DrawRect(bounds, Color.FromHSV(140, 1.00f, 1.00f));
-            
+            DimLib.DrawRect(bounds, Colors.Water);
         }
-
     }
 
     public void ZoomIn()
