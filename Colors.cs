@@ -18,6 +18,10 @@ internal static class Colors
     internal static readonly Color MenuTextSelected = Color.FromHSV(0, 0, 1.0f);
 
 
+    // None
+    internal static readonly Color Bulldoze = Color.FromHSV(8, 0.75f, 0.75f);
+
+
     // Transportation
     internal static readonly Color Rail = Color.FromHSV(210, 0.70f, 0.75f);
     internal static readonly Color Road = Color.FromHSV(55, 0.70f, 0.80f);

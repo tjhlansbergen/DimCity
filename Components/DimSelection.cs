@@ -3,7 +3,7 @@ using Raylib_cs;
 
 internal class DimSelection : DimView
 {
-    public Enumerations.BuildingType SelectedBuildingType { get; set; } = Enumerations.BuildingType.Selection;
+    public Enumerations.BuildingType SelectedBuildingType { get; set; } = Enumerations.BuildingType.Select;
       
     internal DimSelection(Rect bounds, Console console) : base(bounds, console)
     {
@@ -27,7 +27,8 @@ internal class DimSelection : DimView
             Enumerations.BuildingType.Forest => Icons.Forest,
             Enumerations.BuildingType.Road => Icons.Road,
             Enumerations.BuildingType.Rail => Icons.Rail,
-            Enumerations.BuildingType.Selection => Icons.Selection,
+            Enumerations.BuildingType.Select => Icons.Select,
+            Enumerations.BuildingType.Bulldoze => Icons.Bulldoze,
             _ => (_, _) => { /* do nothing */ }
         };
     }

@@ -12,7 +12,8 @@ internal static class Enumerations
     internal enum BuildingType
     {
         // none
-        Selection,
+        Select,
+        Bulldoze,
 
         // terraform
         Water,
@@ -42,7 +43,7 @@ internal static class Enumerations
             BuildingCategory.Transportation => [BuildingType.Road, BuildingType.Rail],
             BuildingCategory.Utilities => [BuildingType.Power],
             BuildingCategory.Zoning => [BuildingType.Residential, BuildingType.Commercial, BuildingType.Industrial],
-            _ => [BuildingType.Selection],
+            _ => [BuildingType.Select, BuildingType.Bulldoze],
         };
     }
 

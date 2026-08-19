@@ -57,11 +57,29 @@ internal static class Icons
         }, color);
     }
 
-
-    internal static void Selection(Rect bounds, bool selected)
+    internal static void Bulldoze(Rect bounds, bool selected)
     {
+        DimLib.DrawRectWithOutline(bounds, Colors.Background, selected ? Colors.PinStripe : Colors.PinStripeModerate, 1);
+        float padding = 4f;
+        float thickness = 2f;
 
+        // diagonal line from top-left to bottom-right
+        Raylib.DrawLineEx(
+            new Vector2(bounds.position.X + padding, bounds.position.Y + padding),
+            new Vector2(bounds.position.X + bounds.size.X - padding, bounds.position.Y + bounds.size.Y - padding),
+            thickness,
+            Colors.Bulldoze);
 
+        // diagonal line from bottom-left to top-right
+        Raylib.DrawLineEx(
+            new Vector2(bounds.position.X + padding, bounds.position.Y + bounds.size.Y - padding),
+            new Vector2(bounds.position.X + bounds.size.X - padding, bounds.position.Y + padding),
+            thickness,
+            Colors.Bulldoze);
+    }
+
+    internal static void Select(Rect bounds, bool selected)
+    {
         // dashed outline
         var outlineColor = selected ? Colors.PinStripe : Colors.PinStripeModerate;
         float dashLen = 6f;

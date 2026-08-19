@@ -116,7 +116,7 @@ internal class DimWindow
     {
         switch (selectionPanel.SelectedBuildingType)
         {
-            case Enumerations.BuildingType.Selection:
+            case Enumerations.BuildingType.Select:
                 map.Offset += Raylib.GetMouseDelta();
                 break;
             default:
