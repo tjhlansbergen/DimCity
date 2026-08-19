@@ -62,7 +62,7 @@ internal class DimWindow
         
         console.Write(string.Empty);
         console.Write("Welcome to DimCity!");
-        console.Write("Click and hold to pan around.");
+        console.Write("Click and hold to pan around, scroll to zoom.");
     }
 
     internal void Write(string message)
@@ -93,6 +93,11 @@ internal class DimWindow
 
     private void DispatchInput()
     {
+        // zooming
+        var scrollDelta = Raylib.GetMouseWheelMove();
+        if (scrollDelta > 0) map.ZoomIn();
+        if (scrollDelta < 0) map.ZoomOut();
+        
         // single click
         if (Raylib.IsMouseButtonReleased(MouseButton.Left))
         {
