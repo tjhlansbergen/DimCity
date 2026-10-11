@@ -2,17 +2,17 @@ using Raylib_cs;
 
 internal class None : DimGrid
 {
-    internal None(Rect bounds, Console console, Font font, Action<Enumerations.BuildingType> onSelectionChanged) : base(bounds, console, font)
+    internal None(Rect bounds, Console console, Font font, Action<BuildingTypes.BuildingType> onSelectionChanged) : base(bounds, console, font)
     {
-        foreach (var type in Enumerations.BuildingTypesByCategory(Enumerations.BuildingCategory.None))
+        foreach (var type in BuildingTypes.BuildingTypesByCategory(BuildingTypes.BuildingCategory.None))
         {
             switch (type)
             {
-                case Enumerations.BuildingType.Select:
-                    AddItem(type.ToString(), () => onSelectionChanged(Enumerations.BuildingType.Select), Icons.Select);
+                case BuildingTypes.BuildingType.Select:
+                    AddItem(type.ToString(), () => onSelectionChanged(BuildingTypes.BuildingType.Select), Icons.Select);
                     break;
-                case Enumerations.BuildingType.Bulldoze:
-                    AddItem(type.ToString(), () => onSelectionChanged(Enumerations.BuildingType.Bulldoze), Icons.Bulldoze);
+                case BuildingTypes.BuildingType.Bulldoze:
+                    AddItem(type.ToString(), () => onSelectionChanged(BuildingTypes.BuildingType.Bulldoze), Icons.Bulldoze);
                     break;
             }
         }

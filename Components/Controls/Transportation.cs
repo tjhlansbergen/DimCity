@@ -2,17 +2,17 @@ using Raylib_cs;
 
 internal class Transportation : DimGrid
 { 
-    internal Transportation(Rect bounds, Console console, Font font, Action<Enumerations.BuildingType> onSelectionChanged) : base(bounds, console, font)
+    internal Transportation(Rect bounds, Console console, Font font, Action<BuildingTypes.BuildingType> onSelectionChanged) : base(bounds, console, font)
     {
-        foreach (var type in Enumerations.BuildingTypesByCategory(Enumerations.BuildingCategory.Transportation))
+        foreach (var type in BuildingTypes.BuildingTypesByCategory(BuildingTypes.BuildingCategory.Transportation))
         {
             switch (type)
             {
-                case Enumerations.BuildingType.Road:
-                    AddItem(type.ToString(),  () => onSelectionChanged(Enumerations.BuildingType.Road), Icons.Road);
+                case BuildingTypes.BuildingType.Road:
+                    AddItem(type.ToString(),  () => onSelectionChanged(BuildingTypes.BuildingType.Road), Icons.Road);
                     break;
-                case Enumerations.BuildingType.Rail:
-                    AddItem(type.ToString(), () => onSelectionChanged(Enumerations.BuildingType.Rail), Icons.Rail);
+                case BuildingTypes.BuildingType.Rail:
+                    AddItem(type.ToString(), () => onSelectionChanged(BuildingTypes.BuildingType.Rail), Icons.Rail);
                     break;
             }
         }        

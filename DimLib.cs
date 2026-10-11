@@ -15,7 +15,7 @@ internal struct Rect
         return $"Position: ({position.X}, {position.Y}), Size: ({size.X}, {size.Y})";
     }
 
-    public Rect Shrink(int padding)
+    internal readonly Rect Shrink(int padding)
     {
         return new Rect
         {
@@ -24,13 +24,21 @@ internal struct Rect
         };
     }
 
-    public Rect Move(Vector2 offset)
+    internal readonly Rect Move(Vector2 offset)
     {
         return new Rect
         {
             position = new Vector2(position.X + offset.X, position.Y + offset.Y),
             size = size,
         };
+    }
+
+    internal readonly bool Intersects(Rect tileBounds)
+    {
+        return !(tileBounds.position.X > position.X + size.X || 
+                 tileBounds.position.X + tileBounds.size.X < position.X || 
+                 tileBounds.position.Y > position.Y + size.Y ||
+                 tileBounds.position.Y + tileBounds.size.Y < position.Y);
     }
 }
 

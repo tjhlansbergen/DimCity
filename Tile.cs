@@ -1,6 +1,6 @@
-using static Enumerations;
+using static BuildingTypes;
 
 internal class Tile
 {
-    internal BuildingType? Terra { get; set; } = null;
+    internal BuildingType? BuildingType { get; set; } = null;
 }

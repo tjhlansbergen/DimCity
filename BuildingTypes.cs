@@ -1,4 +1,6 @@
-internal static class Enumerations
+using Raylib_cs;
+
+internal static class BuildingTypes
 {
     internal enum BuildingCategory
     {
@@ -25,14 +27,14 @@ internal static class Enumerations
         Rail,
         
         // utilities
-
+        Power,
 
         // zoning
         Residential,
         Commercial,
         Industrial,
 
-        Power,
+
     }
 
     internal static BuildingType[] BuildingTypesByCategory(BuildingCategory category)
@@ -44,6 +46,23 @@ internal static class Enumerations
             BuildingCategory.Utilities => [BuildingType.Power],
             BuildingCategory.Zoning => [BuildingType.Residential, BuildingType.Commercial, BuildingType.Industrial],
             _ => [BuildingType.Select, BuildingType.Bulldoze],
+        };
+    }
+
+    internal static Color ColorForBuildingType(BuildingType buildingType)
+    {
+        return buildingType switch
+        {
+            BuildingType.Water => Colors.Water,
+            BuildingType.Mountains => Colors.Mountains,
+            BuildingType.Forest => Colors.Forest,
+            BuildingType.Road => Colors.Road,
+            BuildingType.Rail => Colors.Rail,
+            BuildingType.Residential => Colors.Residential,
+            BuildingType.Commercial => Colors.Commercial,
+            BuildingType.Industrial => Colors.Industrial,
+            BuildingType.Power => Colors.Power,
+            _ => Colors.Background
         };
     }
 

@@ -7,6 +7,8 @@ internal class DimWindow
     internal int Width { get; private set; }
     internal int Height { get; private set; }
 
+    internal DimCity City { get; private set; } = new();
+
     internal Console console = new();
 
     internal DimMap map;
@@ -36,11 +38,13 @@ internal class DimWindow
         var margin = 6;
         var bottomPanelSize = new Vector2(Width / 2 - margin - (margin / 2), horizon - margin);
 
+
+
         map = new DimMap(new Rect
         {
             position = new Vector2(0, 0),
             size = new Vector2(Width, Height),
-        }, console);
+        }, console, City);
 
         consolePanel = new DimConsole(new Rect
         {
@@ -101,7 +105,7 @@ internal class DimWindow
         // single click
         if (Raylib.IsMouseButtonReleased(MouseButton.Left))
         {
-            if (Raylib.GetMouseY() > Height - horizon && Raylib.GetMouseX() < Width / 2)
+            if (Raylib.GetMouseY() > Height - horizon && Raylib.GetMouseX() < Width / 2)    // inside controls panel
             {
                 HandleControlsInput();
             }
@@ -110,7 +114,7 @@ internal class DimWindow
         // click 'n drag
         if (Raylib.IsMouseButtonDown(MouseButton.Left))
         {
-            if (Raylib.GetMouseY() < Height - horizon)
+            if (Raylib.GetMouseY() < Height - horizon)  // inside map
             {
                 HandleMapInput();
             }
@@ -121,10 +125,14 @@ internal class DimWindow
     {
         switch (selectionPanel.SelectedBuildingType)
         {
-            case Enumerations.BuildingType.Select:
+            case BuildingTypes.BuildingType.Select:
                 map.Offset += Raylib.GetMouseDelta();
                 break;
+            case BuildingTypes.BuildingType.Bulldoze:
+                map.Bulldoze(Raylib.GetMousePosition());
+                break;
             default:
+                map.Build(selectionPanel.SelectedBuildingType, Raylib.GetMousePosition());
                 break;
         }
     }
@@ -134,7 +142,7 @@ internal class DimWindow
         controlsPanel?.Click(Raylib.GetMousePosition());
     }
 
-    private void SelectionChanged(Enumerations.BuildingType type)
+    private void SelectionChanged(BuildingTypes.BuildingType type)
     {
         // reset previous selection
         controlsPanel.Tabs.Where(tab => tab.Key != controlsPanel.Menu.SelectedLabel).ToList().ForEach(tab => tab.Value.SelectedIndex = null);
