@@ -105,6 +105,7 @@ internal class DimWindow
         // single click
         if (Raylib.IsMouseButtonReleased(MouseButton.Left))
         {
+            map.CommitBuild();
             if (Raylib.GetMouseY() > Height - horizon && Raylib.GetMouseX() < Width / 2)    // inside controls panel
             {
                 HandleControlsInput();
@@ -116,9 +117,22 @@ internal class DimWindow
         {
             if (Raylib.GetMouseY() < Height - horizon)  // inside map
             {
+                if (Raylib.IsMouseButtonPressed(MouseButton.Left))
+                {
+                    BeginMapBuildIfNeeded();
+                }
+
                 HandleMapInput();
             }
         }
+    }
+
+    private void BeginMapBuildIfNeeded()
+    {
+        var type = selectionPanel.SelectedBuildingType;
+        if (type is BuildingTypes.BuildingType.Select or BuildingTypes.BuildingType.Bulldoze) return;
+
+        map.BeginBuild(type, Raylib.GetMousePosition());
     }
 
     private void HandleMapInput()

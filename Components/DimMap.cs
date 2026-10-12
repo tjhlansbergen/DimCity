@@ -8,6 +8,8 @@ internal class DimMap : DimView
 
     private Dictionary<Vector2, Tile> tiles;
     private Dictionary<Vector2, Color> overlay;
+    private BuildingTypes.BuildingType? activeBuildType;
+    private Vector2 buildStart;
 
     private const int minZoom = 4;
     private const int maxZoom = 32;
@@ -78,15 +80,69 @@ internal class DimMap : DimView
 
     internal void Build(BuildingTypes.BuildingType selectedBuildingType, Vector2 mousePosition)
     {
-        var position = MouseToTile(mousePosition);
-        if (PositionFree(position))
+        var category = BuildingTypes.CategoryForBuildingType(selectedBuildingType);
+        if (category == BuildingTypes.BuildingCategory.Terraform)
         {
-            tiles[position] = new Tile { BuildingType = selectedBuildingType };
+            var position = MouseToTile(mousePosition);
+            if (PositionFree(position))
+            {
+                tiles[position] = new Tile { BuildingType = selectedBuildingType };
+            }
+
+            return;
         }
 
-        // todo: utilities & transportation should build by creating a line between the start of the mouse down and the current mouse position,
-        // while zoning should use a rectangle between the start of the mouse down and the current mouse position. 
-        // This will require storing the start position of the mouse down event.
+        if (activeBuildType != selectedBuildingType) return;
+
+        var end = MouseToTile(mousePosition);
+        overlay.Clear();
+
+        IEnumerable<Vector2> shape = category switch
+        {
+            BuildingTypes.BuildingCategory.Utilities or BuildingTypes.BuildingCategory.Transportation => DimLib.LineTiles(buildStart, end),
+            BuildingTypes.BuildingCategory.Zoning => DimLib.RectangleTiles(buildStart, end),
+            _ => []
+        };
+
+        var color = BuildingTypes.ColorForBuildingType(selectedBuildingType);
+        foreach (var position in shape)
+        {
+            if (PositionFree(position))
+            {
+                overlay[position] = color;
+            }
+        }
+    }
+
+    internal void BeginBuild(BuildingTypes.BuildingType selectedBuildingType, Vector2 mousePosition)
+    {
+        overlay.Clear();
+        if (BuildingTypes.CategoryForBuildingType(selectedBuildingType) == BuildingTypes.BuildingCategory.Terraform)
+        {
+            activeBuildType = null;
+            return;
+        }
+
+        activeBuildType = selectedBuildingType;
+        buildStart = MouseToTile(mousePosition);
+        Build(selectedBuildingType, mousePosition);
+    }
+
+    internal void CommitBuild()
+    {
+        if (activeBuildType.HasValue)
+        {
+            foreach (var position in overlay.Keys)
+            {
+                if (PositionFree(position))
+                {
+                    tiles[position] = new Tile { BuildingType = activeBuildType.Value };
+                }
+            }
+        }
+
+        activeBuildType = null;
+        overlay.Clear();
     }
 
     internal void Bulldoze(Vector2 mousePosition)
@@ -110,4 +166,3 @@ internal class DimMap : DimView
         return !tiles.ContainsKey(position);
     }
 }
-

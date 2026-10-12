@@ -54,4 +54,51 @@ internal static class DimLib
         Raylib.DrawRectangleV(rect.position, rect.size, fillColor);
         Raylib.DrawRectangleLinesEx(new Rectangle(rect.position.X, rect.position.Y, rect.size.X, rect.size.Y), outlineThickness, outlineColor);
     }
+
+    internal static IEnumerable<Vector2> LineTiles(Vector2 start, Vector2 end)
+    {
+        var x = (int)start.X;
+        var y = (int)start.Y;
+        var endX = (int)end.X;
+        var endY = (int)end.Y;
+        var deltaX = Math.Abs(endX - x);
+        var stepX = x < endX ? 1 : -1;
+        var deltaY = -Math.Abs(endY - y);
+        var stepY = y < endY ? 1 : -1;
+        var error = deltaX + deltaY;
+
+        while (true)
+        {
+            yield return new Vector2(x, y);
+            if (x == endX && y == endY) yield break;
+
+            var doubledError = 2 * error;
+            if (doubledError >= deltaY)
+            {
+                error += deltaY;
+                x += stepX;
+            }
+            if (doubledError <= deltaX)
+            {
+                error += deltaX;
+                y += stepY;
+            }
+        }
+    }
+
+    internal static IEnumerable<Vector2> RectangleTiles(Vector2 start, Vector2 end)
+    {
+        var minX = (int)Math.Min(start.X, end.X);
+        var maxX = (int)Math.Max(start.X, end.X);
+        var minY = (int)Math.Min(start.Y, end.Y);
+        var maxY = (int)Math.Max(start.Y, end.Y);
+
+        for (var x = minX; x <= maxX; x++)
+        {
+            for (var y = minY; y <= maxY; y++)
+            {
+                yield return new Vector2(x, y);
+            }
+        }
+    }
 }
