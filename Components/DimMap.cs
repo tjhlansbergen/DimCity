@@ -1,4 +1,5 @@
 using System.Numerics;
+using Raylib_cs;
 
 internal class DimMap : DimView
 {
@@ -6,6 +7,7 @@ internal class DimMap : DimView
     private int Zoom { get; set; } = minZoom;
 
     private Dictionary<Vector2, Tile> tiles;
+    private Dictionary<Vector2, Color> overlay;
 
     private const int minZoom = 4;
     private const int maxZoom = 32;
@@ -13,12 +15,14 @@ internal class DimMap : DimView
     internal DimMap(Rect bounds, Console console, DimCity city) : base(bounds, console)
     {
         tiles = city.Tiles;
+        overlay = [];
         console.Write($"Map mounted at {bounds}", debug: true);
     }
 
     internal override void Draw()
     {
         DrawTiles();
+        DrawOverlay();
     }
 
     private void DrawTiles()
@@ -43,6 +47,25 @@ internal class DimMap : DimView
         }
     }
 
+    private void DrawOverlay()
+    {
+        foreach (var pixel in overlay)
+        {
+            // get bounds
+            var pixelBounds = new Rect
+            {
+                position = new Vector2(pixel.Key.X * Zoom + Offset.X, pixel.Key.Y * Zoom + Offset.Y),
+                size = new Vector2(Zoom, Zoom)
+            };
+           
+            // check if the pixel is within the visible bounds of the map
+            if (!Bounds.Intersects(pixelBounds)) continue; 
+
+            // draw
+            DimLib.DrawRect(pixelBounds, pixel.Value);
+        }
+    }
+
     public void ZoomIn()
     {
         if (Zoom < maxZoom) Zoom++;
@@ -61,7 +84,9 @@ internal class DimMap : DimView
             tiles[position] = new Tile { BuildingType = selectedBuildingType };
         }
 
-        // todo: utilities should build by creating lines between clicks
+        // todo: utilities & transportation should build by creating a line between the start of the mouse down and the current mouse position,
+        // while zoning should use a rectangle between the start of the mouse down and the current mouse position. 
+        // This will require storing the start position of the mouse down event.
     }
 
     internal void Bulldoze(Vector2 mousePosition)

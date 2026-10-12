@@ -49,6 +49,12 @@ internal static class BuildingTypes
         };
     }
 
+    internal static BuildingCategory CategoryForBuildingType(BuildingType buildingType)
+    {
+        return Enum.GetValues<BuildingCategory>()
+            .FirstOrDefault(category => BuildingTypesByCategory(category).Contains(buildingType));
+    }
+
     internal static Color ColorForBuildingType(BuildingType buildingType)
     {
         return buildingType switch
