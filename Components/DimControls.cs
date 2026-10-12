@@ -76,10 +76,10 @@ internal class DimControls : DimView
                     result.Add(Enum.GetName(label)!, new Transportation(itemBounds, console, font, _onSelectionChanged));
                     break;
                 case BuildingTypes.BuildingCategory.Utilities:
-                    result.Add(Enum.GetName(label)!, new DimGrid(itemBounds, console, font, new()));
+                    result.Add(Enum.GetName(label)!, new Utilities(itemBounds, console, font, _onSelectionChanged));
                     break;
                 case BuildingTypes.BuildingCategory.Zoning:
-                    result.Add(Enum.GetName(label)!, new DimGrid(itemBounds, console, font, new()));
+                    result.Add(Enum.GetName(label)!, new Zoning(itemBounds, console, font, _onSelectionChanged));
                     break;
             }
         }

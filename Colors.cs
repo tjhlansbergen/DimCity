@@ -35,9 +35,9 @@ internal static class Colors
     // Zoning
     internal static readonly Color Residential = Color.FromHSV(210, 0.70f, 0.75f);
     internal static readonly Color Commercial = Color.FromHSV(55, 0.70f, 0.80f);
-    internal static readonly Color Industrial = Color.FromHSV(30, 0.75f, 0.18f);
+    internal static readonly Color Industrial = Color.FromHSV(0, 0.75f, 0.75f);
 
     
-    internal static readonly Color Power = Color.FromHSV(120, 0.80f, 0.25f);
+    internal static readonly Color Power = Color.FromHSV(190, 0.75f, 0.85f);
     
 }

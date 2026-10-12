@@ -27,10 +27,13 @@ internal class DimSelection : DimView
             BuildingTypes.BuildingType.Forest => Icons.Forest,
             BuildingTypes.BuildingType.Road => Icons.Road,
             BuildingTypes.BuildingType.Rail => Icons.Rail,
+            BuildingTypes.BuildingType.Power => Icons.Power,
+            BuildingTypes.BuildingType.Residential => Icons.Residential,
+            BuildingTypes.BuildingType.Commercial => Icons.Commercial,
+            BuildingTypes.BuildingType.Industrial => Icons.Industrial,
             BuildingTypes.BuildingType.Select => Icons.Select,
             BuildingTypes.BuildingType.Bulldoze => Icons.Bulldoze,
             _ => (_, _) => { /* do nothing */ }
         };
     }
 }
-

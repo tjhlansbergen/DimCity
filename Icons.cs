@@ -35,6 +35,121 @@ internal static class Icons
         _terraform(bounds, Colors.Forest);
     }
 
+    // Utilities
+    internal static void Power(Rect bounds, bool selected)
+    {
+        DimLib.DrawRectWithOutline(bounds, Colors.Background, selected ? Colors.PinStripe : Colors.PinStripeModerate, 1);
+        var color = Colors.Power;
+        var points = new[]
+        {
+            new Vector2(bounds.position.X + bounds.size.X * 0.58f, bounds.position.Y + bounds.size.Y * 0.12f),
+            new Vector2(bounds.position.X + bounds.size.X * 0.34f, bounds.position.Y + bounds.size.Y * 0.54f),
+            new Vector2(bounds.position.X + bounds.size.X * 0.50f, bounds.position.Y + bounds.size.Y * 0.54f),
+            new Vector2(bounds.position.X + bounds.size.X * 0.39f, bounds.position.Y + bounds.size.Y * 0.88f),
+            new Vector2(bounds.position.X + bounds.size.X * 0.68f, bounds.position.Y + bounds.size.Y * 0.43f),
+            new Vector2(bounds.position.X + bounds.size.X * 0.51f, bounds.position.Y + bounds.size.Y * 0.43f),
+        };
+
+        for (var i = 0; i < points.Length; i++)
+        {
+            Raylib.DrawLineEx(points[i], points[(i + 1) % points.Length], 3, color);
+        }
+    }
+
+    // Zoning
+    internal static void Residential(Rect bounds, bool selected)
+    {
+        DimLib.DrawRectWithOutline(bounds, Colors.Background, selected ? Colors.PinStripe : Colors.PinStripeModerate, 1);
+        var color = Colors.Residential;
+        var left = bounds.position.X + bounds.size.X * 0.22f;
+        var right = bounds.position.X + bounds.size.X * 0.78f;
+        var roof = bounds.position.Y + bounds.size.Y * 0.40f;
+        var top = bounds.position.Y + bounds.size.Y * 0.40f;
+        var bottom = bounds.position.Y + bounds.size.Y * 0.82f;
+        var center = bounds.position.X + bounds.size.X / 2;
+
+        Raylib.DrawLineEx(new Vector2(left, roof), new Vector2(center, bounds.position.Y + bounds.size.Y * 0.16f), 3, color);
+        Raylib.DrawLineEx(new Vector2(center, bounds.position.Y + bounds.size.Y * 0.16f), new Vector2(right, roof), 3, color);
+        DimLib.DrawRect(new Rect
+        {
+            position = new Vector2(left, top),
+            size = new Vector2(right - left, bottom - top)
+        }, color);
+        DimLib.DrawRect(new Rect
+        {
+            position = new Vector2(center - bounds.size.X * 0.08f, bottom - bounds.size.Y * 0.22f),
+            size = new Vector2(bounds.size.X * 0.16f, bounds.size.Y * 0.22f)
+        }, Colors.Background);
+    }
+
+    internal static void Commercial(Rect bounds, bool selected)
+    {
+        DimLib.DrawRectWithOutline(bounds, Colors.Background, selected ? Colors.PinStripe : Colors.PinStripeModerate, 1);
+        var left = bounds.position.X + bounds.size.X * 0.25f;
+        var top = bounds.position.Y + bounds.size.Y * 0.16f;
+        var width = bounds.size.X * 0.50f;
+        var height = bounds.size.Y * 0.68f;
+        DimLib.DrawRect(new Rect
+        {
+            position = new Vector2(left, top),
+            size = new Vector2(width, height)
+        }, Colors.Commercial);
+
+        var windowSize = bounds.size.X * 0.10f;
+        for (var row = 0; row < 3; row++)
+        {
+            for (var column = 0; column < 2; column++)
+            {
+                DimLib.DrawRect(new Rect
+                {
+                    position = new Vector2(left + bounds.size.X * (0.10f + column * 0.22f), top + bounds.size.Y * (0.12f + row * 0.17f)),
+                    size = new Vector2(windowSize, windowSize)
+                }, Colors.Background);
+            }
+        }
+    }
+
+    internal static void Industrial(Rect bounds, bool selected)
+    {
+        DimLib.DrawRectWithOutline(bounds, Colors.Background, selected ? Colors.PinStripe : Colors.PinStripeModerate, 1);
+        var color = Colors.Industrial;
+        var left = bounds.position.X + bounds.size.X * 0.15f;
+        var top = bounds.position.Y + bounds.size.Y * 0.47f;
+        var bottom = bounds.position.Y + bounds.size.Y * 0.82f;
+        var right = bounds.position.X + bounds.size.X * 0.85f;
+
+        DimLib.DrawRect(new Rect
+        {
+            position = new Vector2(left, top),
+            size = new Vector2(right - left, bottom - top)
+        }, color);
+        DimLib.DrawRect(new Rect
+        {
+            position = new Vector2(bounds.position.X + bounds.size.X * 0.23f, bounds.position.Y + bounds.size.Y * 0.24f),
+            size = new Vector2(bounds.size.X * 0.12f, bounds.size.Y * 0.30f)
+        }, color);
+        Raylib.DrawLineEx(
+            new Vector2(left, top),
+            new Vector2(bounds.position.X + bounds.size.X * 0.35f, bounds.position.Y + bounds.size.Y * 0.35f),
+            3,
+            color);
+        Raylib.DrawLineEx(
+            new Vector2(bounds.position.X + bounds.size.X * 0.35f, bounds.position.Y + bounds.size.Y * 0.35f),
+            new Vector2(bounds.position.X + bounds.size.X * 0.48f, top),
+            3,
+            color);
+        Raylib.DrawLineEx(
+            new Vector2(bounds.position.X + bounds.size.X * 0.48f, top),
+            new Vector2(bounds.position.X + bounds.size.X * 0.62f, bounds.position.Y + bounds.size.Y * 0.35f),
+            3,
+            color);
+        Raylib.DrawLineEx(
+            new Vector2(bounds.position.X + bounds.size.X * 0.62f, bounds.position.Y + bounds.size.Y * 0.35f),
+            new Vector2(right, top),
+            3,
+            color);
+    }
+
     private static void _transport(Rect bounds, Color color)
     {
         const int thickness = 6;
