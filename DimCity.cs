@@ -3,7 +3,8 @@ using static BuildingTypes;
 
 internal class DimCity
 {
-    internal Dictionary<Vector2, Tile> Tiles { get; private set; } = new();
+    // keep public for serialization
+    public Dictionary<Vector2, Tile> Tiles { get; private set; } = new();
 
     internal DimCity()
     {

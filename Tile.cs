@@ -1,6 +1,7 @@
 using static BuildingTypes;
 
-internal class Tile
+public class Tile
 {
-    internal BuildingType? BuildingType { get; set; } = null;
+    // keep public for serialization
+    public BuildingType? BuildingType { get; set; } = null;
 }

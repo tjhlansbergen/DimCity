@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Threading;
 using Raylib_cs;
 
 
@@ -16,10 +17,12 @@ internal class DimWindow
     internal DimControls controlsPanel;
     internal DimSelection selectionPanel;
 
+    internal static readonly int fontSize = 20;
     
     private static Font notoSansMono;
     private const int horizon = 150;
-    public static readonly int fontSize = 20;
+    
+    private readonly Timer timer; 
 
     internal DimWindow(bool fullscreen)
     {
@@ -63,6 +66,8 @@ internal class DimWindow
             position = new Vector2(margin, Height - horizon - 32 - margin),
             size = new Vector2(32, 32),
         }, console);
+
+        timer = new Timer(TimerElapsed, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
         
         console.Write(string.Empty);
         console.Write("Welcome to DimCity!");
@@ -165,5 +170,11 @@ internal class DimWindow
         selectionPanel.SelectedBuildingType = type;
 
         console.Write($"Selected {type}");
+    }
+
+    private void TimerElapsed(object? _)
+    {
+        var p = Persistance.Store(City);
+        console.Write($"Auto-saved to {p}", debug: true);
     }
 }

@@ -1,8 +1,8 @@
 using Raylib_cs;
 
-internal static class BuildingTypes
+public static class BuildingTypes
 {
-    internal enum BuildingCategory
+    public enum BuildingCategory
     {
         None,
         Terraform,
@@ -11,7 +11,7 @@ internal static class BuildingTypes
         Zoning,
     }
 
-    internal enum BuildingType
+    public enum BuildingType
     {
         // none
         Select,
