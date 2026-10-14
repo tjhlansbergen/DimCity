@@ -3,6 +3,17 @@ using System.Numerics;
 
 internal static class Icons
 {
+    // Navigation
+    internal static void UpArrow(Rect bounds, bool selected)
+    {
+        _chevron(bounds, selected, pointsUp: true);
+    }
+
+    internal static void DownArrow(Rect bounds, bool selected)
+    {
+        _chevron(bounds, selected, pointsUp: false);
+    }
+
     // Transportation
     internal static void Rail(Rect bounds, bool selected)
     {
@@ -170,6 +181,19 @@ internal static class Icons
             position = new Vector2(bounds.position.X + padding, bounds.position.Y + padding),
             size = new Vector2(bounds.size.X - padding * 2, bounds.size.Y - padding * 2)
         }, color);
+    }
+
+    private static void _chevron(Rect bounds, bool selected, bool pointsUp)
+    {
+        var centerX = bounds.position.X + bounds.size.X / 2;
+        var topY = bounds.position.Y + bounds.size.Y * (pointsUp ? 0.30f : 0.70f);
+        var bottomY = bounds.position.Y + bounds.size.Y * (pointsUp ? 0.70f : 0.30f);
+        var leftX = bounds.position.X + bounds.size.X * 0.20f;
+        var rightX = bounds.position.X + bounds.size.X * 0.80f;
+        var color = selected ? Colors.MenuTextSelected : Colors.PinStripeModerate;
+
+        Raylib.DrawLineEx(new Vector2(leftX, bottomY), new Vector2(centerX, topY), 1.5f, color);
+        Raylib.DrawLineEx(new Vector2(centerX, topY), new Vector2(rightX, bottomY), 1.5f, color);
     }
 
     internal static void Bulldoze(Rect bounds, bool selected)

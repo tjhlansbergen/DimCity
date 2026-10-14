@@ -42,14 +42,8 @@ internal class DimWindow
         var bottomPanelSize = new Vector2(Width / 2 - margin - (margin / 2), horizon - margin);
 
         var loadResult = Persistance.Load();
-        if (loadResult.Item2 != null)
-        {
-            console.Write($"Error loading saved city: {loadResult.Item2}");
-        }
-        else
-        {
-            City = loadResult.Item1;
-        }
+        City = loadResult.Item1;
+        console.Write(loadResult.Item2);
 
         map = new DimMap(new Rect
         {
@@ -124,9 +118,14 @@ internal class DimWindow
         if (Raylib.IsMouseButtonReleased(MouseButton.Left))
         {
             map.CommitBuild();
+            
             if (Raylib.GetMouseY() > Height - horizon && Raylib.GetMouseX() < Width / 2)    // inside controls panel
             {
-                HandleControlsInput();
+                controlsPanel?.Click(Raylib.GetMousePosition());
+            }
+            if (Raylib.GetMouseY() > Height - horizon && Raylib.GetMouseX() > Width / 2)    // inside console panel
+            {
+                consolePanel?.Click(Raylib.GetMousePosition());
             }
         }
 
@@ -167,11 +166,6 @@ internal class DimWindow
                 map.Build(selectionPanel.SelectedBuildingType, Raylib.GetMousePosition());
                 break;
         }
-    }
-
-    private void HandleControlsInput()
-    {
-        controlsPanel?.Click(Raylib.GetMousePosition());
     }
 
     private void SelectionChanged(BuildingTypes.BuildingType type)

@@ -13,18 +13,18 @@ internal static class Persistance
         return filePath;
     }
 
-    internal static (DimCity, string?) Load()
+    internal static (DimCity, string) Load()
     {
         var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), FileName);
 
         try
         {
             var yaml = File.ReadAllText(filePath);
-            return (new Deserializer().Deserialize<DimCity>(yaml), null);
+            return (new Deserializer().Deserialize<DimCity>(yaml), $"Loaded saved city from {filePath}");
         }
         catch (Exception ex)
         {
-            return (new DimCity(), ex.Message);
+            return (new DimCity(), $"Error loading saved city: {ex.Message}");
         }
     }
 }

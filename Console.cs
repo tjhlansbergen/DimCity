@@ -4,7 +4,7 @@ internal class Console
 
     internal Console()
     {
-        buffer = new Queue<string>(100);
+        buffer = new Queue<string>(1000);
     }
 
     internal void Write(string text, bool debug = false)
@@ -21,8 +21,12 @@ internal class Console
         }
     }
 
-    internal string[] Read(int count)
+    internal string[] Read(int count, int offset = 0)
     {
-        return [.. buffer.Skip(buffer.Count - count).Take(count)];
+        var start = buffer.Count - count - offset;
+        if (start < 0) start = 0;
+        return [.. buffer.Skip(start).Take(count)];
     }
+
+    internal int Count => buffer.Count;
 }
