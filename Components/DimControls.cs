@@ -20,7 +20,7 @@ internal class DimControls : DimView
         },
         console,
         font,
-        Tabs.ToDictionary(e => e.Key, e => (Action)(() => { console.Write($"Selected {(e.Key == "^" ? "Home" : e.Key)}"); }))
+        Tabs.ToDictionary(e => e.Key, e => (Action)(() => { console.Write($"Selected {(e.Key == "^" ? "Home" : e.Key)}, debug: true"); }))
         );
 
 

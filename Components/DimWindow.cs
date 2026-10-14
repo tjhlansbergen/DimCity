@@ -8,7 +8,7 @@ internal class DimWindow
     internal int Width { get; private set; }
     internal int Height { get; private set; }
 
-    internal DimCity City { get; private set; } = new();
+    internal DimCity City { get; private set; }
 
     internal Console console = new();
 
@@ -41,7 +41,15 @@ internal class DimWindow
         var margin = 6;
         var bottomPanelSize = new Vector2(Width / 2 - margin - (margin / 2), horizon - margin);
 
-
+        var loadResult = Persistance.Load();
+        if (loadResult.Item2 != null)
+        {
+            console.Write($"Error loading saved city: {loadResult.Item2}");
+        }
+        else
+        {
+            City = loadResult.Item1;
+        }
 
         map = new DimMap(new Rect
         {
@@ -96,6 +104,11 @@ internal class DimWindow
 
             Raylib.EndDrawing();
         }
+
+        // shutdown
+        console.Write("Goodbye!");
+        TimerElapsed(null);  // save before exit
+        timer.Dispose();
 
         Raylib.CloseWindow();
     }

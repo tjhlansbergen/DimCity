@@ -1,20 +1,11 @@
 using System.Numerics;
-using static BuildingTypes;
 
 internal class DimCity
 {
     // keep public for serialization
     public Dictionary<Vector2, Tile> Tiles { get; private set; } = new();
 
-    internal DimCity()
-    {
-        for (int i = 5; i < 10; i++)
-        {
-            // temporarily make some water
-            Tiles.Add(new Vector2(i, 10), new Tile { BuildingType = BuildingType.Water });
-            Tiles.Add(new Vector2(i+3, 11), new Tile { BuildingType = BuildingType.Water });
-        }
-    }
+    // parameterless constructor for de-serialization
+    public DimCity() {}
 
-    
 }

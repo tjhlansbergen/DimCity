@@ -13,9 +13,18 @@ internal static class Persistance
         return filePath;
     }
 
-    internal static DimCity Load()
+    internal static (DimCity, string?) Load()
     {
-        // Implementation for loading the DimCity object by name
-        return new DimCity(); // Placeholder return
+        var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), FileName);
+
+        try
+        {
+            var yaml = File.ReadAllText(filePath);
+            return (new Deserializer().Deserialize<DimCity>(yaml), null);
+        }
+        catch (Exception ex)
+        {
+            return (new DimCity(), ex.Message);
+        }
     }
 }
