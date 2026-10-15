@@ -39,6 +39,7 @@ internal class DimControls : DimView
         DimLib.DrawRect(controlsPanel, Colors.Panel);
 
         Menu.Draw();
+        DimLib.DrawRect(new Rect { position = new Vector2(Menu.Bounds.position.X + Menu.Bounds.size.X, Bounds.position.Y), size = new Vector2(2, Bounds.size.Y) }, Colors.Background);
         Tabs[Menu.SelectedLabel].Draw();
     }
 

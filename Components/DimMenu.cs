@@ -32,8 +32,6 @@ internal class DimMenu : DimView
         {
             MenuItems[i].Draw(new Vector2(Bounds.position.X, Bounds.position.Y + i * itemHeight), menuFont, i == SelectedIndex);
         }
-
-        DimLib.DrawRect(new Rect { position = new Vector2(Bounds.position.X + Bounds.size.X - 1, Bounds.position.Y + 4), size = new Vector2(1, Bounds.size.Y - 8) }, Colors.PinStripe);
     }
 
     internal void Click(Vector2 mousePosition)

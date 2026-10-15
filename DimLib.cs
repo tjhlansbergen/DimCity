@@ -44,9 +44,13 @@ internal struct Rect
 
 internal static class DimLib
 {
-    internal static void DrawRect(Rect rect, Color color)
+    internal static void DrawRect(Rect rect, Color color, bool outline = false)
     {
         Raylib.DrawRectangleV(rect.position, rect.size, color);
+        if (outline)
+        {
+            Raylib.DrawRectangleLinesEx(new Rectangle(rect.position.X, rect.position.Y, rect.size.X, rect.size.Y), 1, Colors.PinStripe);
+        }
     }
 
     internal static void DrawRectWithOutline(Rect rect, Color fillColor, Color outlineColor, int outlineThickness)

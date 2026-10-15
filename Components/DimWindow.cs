@@ -1,5 +1,4 @@
 using System.Numerics;
-using System.Threading;
 using Raylib_cs;
 
 
@@ -16,6 +15,8 @@ internal class DimWindow
     internal DimConsole consolePanel;
     internal DimControls controlsPanel;
     internal DimSelection selectionPanel;
+
+    internal DimPopup? popup;
 
     internal static readonly int fontSize = 20;
     
@@ -41,9 +42,7 @@ internal class DimWindow
         var margin = 6;
         var bottomPanelSize = new Vector2(Width / 2 - margin - (margin / 2), horizon - margin);
 
-        var loadResult = Persistance.Load();
-        City = loadResult.Item1;
-        console.Write(loadResult.Item2);
+        City = LoadCity();
 
         map = new DimMap(new Rect
         {
@@ -76,9 +75,26 @@ internal class DimWindow
         console.Write("Click and hold to pan around, scroll to zoom.");
     }
 
-    internal void Write(string message)
+    public void ShowPopup(string title, Dictionary<string, Action> items)
     {
-        console.Write(message);
+        popup = new DimPopup(new Rect
+        {
+            position = new Vector2(Width / 2 - 200, Height / 2 - 100),
+            size = new Vector2(400, 100 + items.Count * (notoSansMono.BaseSize + 6) + 12)
+        }, console, notoSansMono, title, items);
+    }
+
+    private DimCity LoadCity()
+    {
+        ShowPopup("Select City", new Dictionary<string, Action>
+        {
+            { "Amsterwijk", () => { } },
+            { "Rotterdorp", () => {  } }
+        });
+
+        var loadResult = Persistance.Load();
+        console.Write(loadResult.Item2);
+        return loadResult.Item1;
     }
 
     internal void Draw()
@@ -95,6 +111,8 @@ internal class DimWindow
             controlsPanel.Draw();
             consolePanel.Draw();
             selectionPanel.Draw();
+
+            popup?.Draw();
 
             Raylib.EndDrawing();
         }
@@ -117,6 +135,12 @@ internal class DimWindow
         // single click
         if (Raylib.IsMouseButtonReleased(MouseButton.Left))
         {
+            if (popup != null && popup.Menu.Bounds.Contains(Raylib.GetMousePosition()))
+            {
+                popup.Menu.Click(Raylib.GetMousePosition());
+                return;
+            }
+
             map.CommitBuild();
             
             if (Raylib.GetMouseY() > Height - horizon && Raylib.GetMouseX() < Width / 2)    // inside controls panel
