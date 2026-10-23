@@ -77,7 +77,12 @@ internal class DimWindow
             size = new Vector2(400, 100 + items.Count * (notoSansMono.BaseSize + 6) + 12)
         }, console, notoSansMono, title, items);
 
-        popup.Show(callback);
+        var del = new Action<string>((result) => {
+            popup = null;
+            callback.Invoke(result);
+        });
+
+        popup.Show(del);
     }
 
     private void GetCityFromUser()
@@ -91,7 +96,7 @@ internal class DimWindow
         });
     }
 
-    private void LoadCity(string cityName = "Amsterwijk")
+    private void LoadCity(string cityName)
     {
         console.Write($"Loading city {cityName}...", debug: true);
 
@@ -144,9 +149,9 @@ internal class DimWindow
         // single click
         if (Raylib.IsMouseButtonReleased(MouseButton.Left))
         {
-            if (popup != null && popup.Menu.Bounds.Contains(Raylib.GetMousePosition()))
+            if (popup != null && popup.Bounds.Contains(Raylib.GetMousePosition()))
             {
-                popup.Menu.Click(Raylib.GetMousePosition());
+                popup.Click(Raylib.GetMousePosition());
                 return;
             }
 
