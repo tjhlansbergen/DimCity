@@ -31,9 +31,6 @@ internal class DimMap : DimView
     {
         foreach (var tileWithLocation in tiles)
         {
-            // check for building type
-            if (!tileWithLocation.Value.BuildingType.HasValue) continue;
-
             // get tile bounds
             var tileBounds = new Rect
             {
@@ -45,8 +42,13 @@ internal class DimMap : DimView
             if (!Bounds.Intersects(tileBounds)) continue; 
 
             // draw
-            DimLib.DrawRect(tileBounds, BuildingTypes.ColorForBuildingType(tileWithLocation.Value.BuildingType.Value));
+            DrawTile(tileBounds, tileWithLocation.Value);
         }
+    }
+
+    private static void DrawTile(Rect tileBounds, Tile tile)
+    {
+        DimLib.DrawRect(tileBounds, BuildingTypes.ColorForBuildingType(tile.BuildingType));
     }
 
     private void DrawOverlay()
