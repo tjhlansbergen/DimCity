@@ -3,13 +3,17 @@ using Raylib_cs;
 
 internal class DimPopup : DimView
 {
+    public bool Active { get; set; } = false;
     internal DimMenu Menu { get; private set; }
     internal string Title { get; private set; }
     internal Font Font { get; private set; }
+
+    private Action<string>? _callback;
+
     const int padding = 12;
     const int verticalMargin = 30;
 
-    internal DimPopup(Rect bounds, Console console, Font font, string title, Dictionary<string, Action> items) : base(bounds, console)
+    internal DimPopup(Rect bounds, Console console, Font font, string title, SortedSet<string> items) : base(bounds, console)
     {
         console.Write($"Popup mounted at {bounds}", debug: true);
 
@@ -24,6 +28,12 @@ internal class DimPopup : DimView
         font,
         items
         );
+    }
+
+    public void Show(Action<string> callback)
+    {
+        Active = true;
+        _callback = callback;
     }
 
     internal override void Draw()

@@ -7,11 +7,11 @@ internal class DimWindow
     internal int Width { get; private set; }
     internal int Height { get; private set; }
 
-    internal DimCity City { get; private set; }
+    internal DimCity? City { get; private set; }
 
     internal Console console = new();
 
-    internal DimMap map;
+    internal DimMap? map;
     internal DimConsole consolePanel;
     internal DimControls controlsPanel;
     internal DimSelection selectionPanel;
@@ -42,14 +42,6 @@ internal class DimWindow
         var margin = 6;
         var bottomPanelSize = new Vector2(Width / 2 - margin - (margin / 2), horizon - margin);
 
-        City = LoadCity();
-
-        map = new DimMap(new Rect
-        {
-            position = new Vector2(0, 0),
-            size = new Vector2(Width, Height),
-        }, console, City);
-
         consolePanel = new DimConsole(new Rect
         {
             position = new Vector2(Width / 2 + margin / 2, Height - horizon),
@@ -73,28 +65,45 @@ internal class DimWindow
         console.Write(string.Empty);
         console.Write("Welcome to DimCity!");
         console.Write("Click and hold to pan around, scroll to zoom.");
+
+        GetCityFromUser();
     }
 
-    public void ShowPopup(string title, Dictionary<string, Action> items)
+    public void ShowPopup(string title, SortedSet<string> items, Action<string> callback)
     {
         popup = new DimPopup(new Rect
         {
             position = new Vector2(Width / 2 - 200, Height / 2 - 100),
             size = new Vector2(400, 100 + items.Count * (notoSansMono.BaseSize + 6) + 12)
         }, console, notoSansMono, title, items);
+
+        popup.Show(callback);
     }
 
-    private DimCity LoadCity()
+    private void GetCityFromUser()
     {
-        ShowPopup("Select City", new Dictionary<string, Action>
-        {
-            { "Amsterwijk", () => { } },
-            { "Rotterdorp", () => {  } }
+        ShowPopup("Select City",
+        [
+            "Amsterwijk",
+            "Rotterdorp"
+        ], (city) => {
+            LoadCity(city);
         });
+    }
+
+    private void LoadCity(string cityName = "Amsterwijk")
+    {
+        console.Write($"Loading city {cityName}...", debug: true);
 
         var loadResult = Persistance.Load();
+        City = loadResult.Item1;
         console.Write(loadResult.Item2);
-        return loadResult.Item1;
+
+        map = new DimMap(new Rect
+        {
+            position = new Vector2(0, 0),
+            size = new Vector2(Width, Height),
+        }, console, City);
     }
 
     internal void Draw()
@@ -107,7 +116,7 @@ internal class DimWindow
             Raylib.ClearBackground(Colors.Background);
 
             
-            map.Draw();
+            map?.Draw();
             controlsPanel.Draw();
             consolePanel.Draw();
             selectionPanel.Draw();
@@ -129,8 +138,8 @@ internal class DimWindow
     {
         // zooming
         var scrollDelta = Raylib.GetMouseWheelMove();
-        if (scrollDelta > 0) map.ZoomIn();
-        if (scrollDelta < 0) map.ZoomOut();
+        if (scrollDelta > 0) map?.ZoomIn();
+        if (scrollDelta < 0) map?.ZoomOut();
         
         // single click
         if (Raylib.IsMouseButtonReleased(MouseButton.Left))
@@ -141,7 +150,7 @@ internal class DimWindow
                 return;
             }
 
-            map.CommitBuild();
+            map?.CommitBuild();
             
             if (Raylib.GetMouseY() > Height - horizon && Raylib.GetMouseX() < Width / 2)    // inside controls panel
             {
@@ -173,7 +182,7 @@ internal class DimWindow
         var type = selectionPanel.SelectedBuildingType;
         if (type is BuildingTypes.BuildingType.Select or BuildingTypes.BuildingType.Bulldoze) return;
 
-        map.BeginBuild(type, Raylib.GetMousePosition());
+        map?.BeginBuild(type, Raylib.GetMousePosition());
     }
 
     private void HandleMapInput()
@@ -181,13 +190,13 @@ internal class DimWindow
         switch (selectionPanel.SelectedBuildingType)
         {
             case BuildingTypes.BuildingType.Select:
-                map.Offset += Raylib.GetMouseDelta();
+                map?.Offset += Raylib.GetMouseDelta();
                 break;
             case BuildingTypes.BuildingType.Bulldoze:
-                map.Bulldoze(Raylib.GetMousePosition());
+                map?.Bulldoze(Raylib.GetMousePosition());
                 break;
             default:
-                map.Build(selectionPanel.SelectedBuildingType, Raylib.GetMousePosition());
+                map?.Build(selectionPanel.SelectedBuildingType, Raylib.GetMousePosition());
                 break;
         }
     }
@@ -205,6 +214,8 @@ internal class DimWindow
 
     private void TimerElapsed(object? _)
     {
+        if (City == null) return;
+
         var p = Persistance.Store(City);
         console.Write($"Auto-saved to {p}", debug: true);
     }

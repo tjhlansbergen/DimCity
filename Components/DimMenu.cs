@@ -10,13 +10,22 @@ internal class DimMenu : DimView
     private Font menuFont;
     private int itemHeight => menuFont.BaseSize + 6;
 
-    internal DimMenu(Rect bounds, Console console, Font font, Dictionary<string, Action> items) : base(bounds, console)
+    internal DimMenu(Rect bounds, Console console, Font font, Dictionary<string, Action> items) 
+    : base(bounds, console)
     {
         menuFont = font;
         foreach (var kvp in items)
-        {
             MenuItems.Add(MenuItems.Count, new DimMenuItem(kvp.Key, kvp.Value));
-        }
+
+        console.Write($"Menu mounted at {bounds}", debug: true);
+    }
+
+    internal DimMenu(Rect bounds, Console console, Font font, IEnumerable<string> items)
+    : base(bounds, console)
+    {
+        menuFont = font;
+        foreach (var label in items)
+            MenuItems.Add(MenuItems.Count, new DimMenuItem(label, null));
 
         console.Write($"Menu mounted at {bounds}", debug: true);
     }
@@ -52,7 +61,7 @@ internal class DimMenu : DimView
             }
         }
     }
-    
+
 }
 
 internal class DimMenuItem
@@ -61,7 +70,7 @@ internal class DimMenuItem
     public Action? Action { get; private set; }
 
     internal DimMenuItem(string Label, Action? Action)
-    {     
+    {
         this.Label = Label;
         this.Action = Action;
     }
