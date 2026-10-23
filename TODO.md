@@ -1,2 +1,1 @@
-- Building: What draws on top of what? And how to prevent duplicate ('stacked') tiles
-- Persistance, seperate service?
+- Building: What draws on top of what?
