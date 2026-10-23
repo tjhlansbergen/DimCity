@@ -19,11 +19,11 @@ internal class DimWindow
     internal DimPopup? popup;
 
     internal static readonly int fontSize = 20;
-    
+
     private static Font notoSansMono;
     private const int horizon = 150;
-    
-    private readonly Timer timer; 
+
+    private readonly Timer timer;
 
     internal DimWindow(bool fullscreen)
     {
@@ -61,7 +61,7 @@ internal class DimWindow
         }, console);
 
         timer = new Timer(TimerElapsed, null, TimeSpan.FromMinutes(1), TimeSpan.FromMinutes(1));
-        
+
         console.Write(string.Empty);
         console.Write("Welcome to DimCity!");
         console.Write("Click and hold to pan around, scroll to zoom.");
@@ -71,18 +71,18 @@ internal class DimWindow
 
     public void ShowPopup(string title, SortedSet<string> items, Action<string> callback)
     {
-        popup = new DimPopup(new Rect
+        var del = new Action<string>((result) =>
         {
-            position = new Vector2(Width / 2 - 200, Height / 2 - 100),
-            size = new Vector2(400, 100 + items.Count * (notoSansMono.BaseSize + 6) + 12)
-        }, console, notoSansMono, title, items);
-
-        var del = new Action<string>((result) => {
             popup = null;
             callback.Invoke(result);
         });
 
-        popup.Show(del);
+        popup = new DimPopup(new Rect
+        {
+            position = new Vector2(Width / 2 - 200, Height / 2 - 100),
+            size = new Vector2(400, 100 + items.Count * (notoSansMono.BaseSize + 6) + 12)
+        }, console, notoSansMono, title, items, del);
+
     }
 
     private void GetCityFromUser()
@@ -91,7 +91,8 @@ internal class DimWindow
         [
             "Amsterwijk",
             "Rotterdorp"
-        ], (city) => {
+        ], (city) =>
+        {
             LoadCity(city);
         });
     }
@@ -120,7 +121,7 @@ internal class DimWindow
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Colors.Background);
 
-            
+
             map?.Draw();
             controlsPanel.Draw();
             consolePanel.Draw();
@@ -145,7 +146,7 @@ internal class DimWindow
         var scrollDelta = Raylib.GetMouseWheelMove();
         if (scrollDelta > 0) map?.ZoomIn();
         if (scrollDelta < 0) map?.ZoomOut();
-        
+
         // single click
         if (Raylib.IsMouseButtonReleased(MouseButton.Left))
         {
@@ -156,7 +157,7 @@ internal class DimWindow
             }
 
             map?.CommitBuild();
-            
+
             if (Raylib.GetMouseY() > Height - horizon && Raylib.GetMouseX() < Width / 2)    // inside controls panel
             {
                 controlsPanel?.Click(Raylib.GetMousePosition());
@@ -210,7 +211,7 @@ internal class DimWindow
     {
         // reset previous selection
         controlsPanel.Tabs.Where(tab => tab.Key != controlsPanel.Menu.SelectedLabel).ToList().ForEach(tab => tab.Value.SelectedIndex = null);
-                
+
         // set new selection
         selectionPanel.SelectedBuildingType = type;
 
