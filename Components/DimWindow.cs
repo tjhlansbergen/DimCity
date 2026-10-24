@@ -89,8 +89,12 @@ internal class DimWindow
     {
         ShowPopup("Select City",
         [
-            "Amsterwijk",
-            "Rotterdorp"
+            "Amsterdim",
+            "Bosten",
+            "Chicano",
+            "Dimver",
+            "Elhambra",
+            "San Francesca"
         ], (city) =>
         {
             LoadCity(city);
@@ -101,7 +105,7 @@ internal class DimWindow
     {
         console.Write($"Loading city {cityName}...", debug: true);
 
-        var loadResult = Persistance.Load();
+        var loadResult = Persistance.Load(cityName);
         City = loadResult.Item1;
         console.Write(loadResult.Item2);
 
