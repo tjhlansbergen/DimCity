@@ -65,6 +65,7 @@ internal class DimWindow
         console.Write(string.Empty);
         console.Write("Welcome to DimCity!");
         console.Write("Click and hold to pan around, scroll to zoom.");
+        console.Write("Press Ctrl-Z to undo your last action.");
 
         GetCityFromUser();
     }
@@ -146,6 +147,12 @@ internal class DimWindow
 
     private void DispatchInput()
     {
+        if (Raylib.IsKeyPressed(KeyboardKey.Z)
+            && (Raylib.IsKeyDown(KeyboardKey.LeftControl) || Raylib.IsKeyDown(KeyboardKey.RightControl)))
+        {
+            console.Write(map?.Undo() == true ? "Undid last map change." : "Nothing to undo.");
+        }
+
         // zooming
         var scrollDelta = Raylib.GetMouseWheelMove();
         if (scrollDelta > 0) map?.ZoomIn();
@@ -190,7 +197,12 @@ internal class DimWindow
     private void BeginMapBuildIfNeeded()
     {
         var type = selectionPanel.SelectedBuildingType;
-        if (type is BuildingTypes.BuildingType.Select or BuildingTypes.BuildingType.Bulldoze) return;
+        if (type == BuildingTypes.BuildingType.Select) return;
+        if (type == BuildingTypes.BuildingType.Bulldoze)
+        {
+            map?.BeginUndoAction();
+            return;
+        }
 
         map?.BeginBuild(type, Raylib.GetMousePosition());
     }

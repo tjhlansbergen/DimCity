@@ -7,6 +7,7 @@ internal class DimMap : DimView
     private int Zoom { get; set; } = minZoom;
 
     private Dictionary<Vector2, Tile> tiles;
+    private readonly Dictionary<Vector2, (bool Existed, Tile? Tile)> lastChangedTiles = [];
     private Dictionary<Vector2, Color> overlay;
     private BuildingTypes.BuildingType? activeBuildType;
     private Vector2 buildStart;
@@ -111,7 +112,7 @@ internal class DimMap : DimView
         if (category == BuildingTypes.BuildingCategory.Terraform)
         {
             var position = MouseToTile(mousePosition);
-            tiles[position] = new Tile { BuildingType = selectedBuildingType };
+            SetTile(position, new Tile { BuildingType = selectedBuildingType });
 
             return;
         }
@@ -137,6 +138,7 @@ internal class DimMap : DimView
 
     internal void BeginBuild(BuildingTypes.BuildingType selectedBuildingType, Vector2 mousePosition)
     {
+        BeginUndoAction();
         overlay.Clear();
         if (BuildingTypes.CategoryForBuildingType(selectedBuildingType) == BuildingTypes.BuildingCategory.Terraform)
         {
@@ -155,7 +157,7 @@ internal class DimMap : DimView
         {
             foreach (var position in overlay.Keys)
             {
-                tiles[position] = new Tile { BuildingType = activeBuildType.Value };
+                SetTile(position, new Tile { BuildingType = activeBuildType.Value });
             }
         }
 
@@ -168,8 +170,53 @@ internal class DimMap : DimView
         var position = MouseToTile(mousePosition);
         if (!PositionFree(position))
         {
-            tiles.Remove(position);
+            RemoveTile(position);
         }
+    }
+
+    internal void BeginUndoAction()
+    {
+        lastChangedTiles.Clear();
+    }
+
+    internal bool Undo()
+    {
+        if (lastChangedTiles.Count == 0) return false;
+
+        foreach (var (position, original) in lastChangedTiles)
+        {
+            if (original.Existed)
+            {
+                tiles[position] = original.Tile!;
+            }
+            else
+            {
+                tiles.Remove(position);
+            }
+        }
+
+        lastChangedTiles.Clear();
+        return true;
+    }
+
+    private void SetTile(Vector2 position, Tile tile)
+    {
+        RecordTileBeforeChange(position);
+        tiles[position] = tile;
+    }
+
+    private void RemoveTile(Vector2 position)
+    {
+        RecordTileBeforeChange(position);
+        tiles.Remove(position);
+    }
+
+    private void RecordTileBeforeChange(Vector2 position)
+    {
+        if (lastChangedTiles.ContainsKey(position)) return;
+
+        var existed = tiles.TryGetValue(position, out var tile);
+        lastChangedTiles[position] = (existed, existed ? new Tile { BuildingType = tile!.BuildingType } : null);
     }
 
     private Vector2 MouseToTile(Vector2 mousePosition)
