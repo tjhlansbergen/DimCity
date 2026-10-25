@@ -48,6 +48,8 @@ internal class DimMap : DimView
 
     private static void DrawTile(Rect tileBounds, Tile tile)
     {
+        //todo: move these out of here
+
         if (BuildingTypes.CategoryForBuildingType(tile.BuildingType) == BuildingTypes.BuildingCategory.Zoning)
         {
             DimLib.DrawRectWithOutline(
@@ -56,6 +58,18 @@ internal class DimMap : DimView
                 outlineColor: BuildingTypes.ColorForBuildingType(tile.BuildingType),
                 1
             );
+            return;
+        }
+
+        if (tile.BuildingType == BuildingTypes.BuildingType.Power)
+        {
+            DimLib.DrawCircle(tileBounds, BuildingTypes.ColorForBuildingType(tile.BuildingType));
+            return;
+        }
+
+        if (tile.BuildingType == BuildingTypes.BuildingType.Rail)
+        {
+            DimLib.DrawRect(tileBounds.Shrink(1), BuildingTypes.ColorForBuildingType(tile.BuildingType));    
             return;
         }
 

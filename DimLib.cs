@@ -40,6 +40,11 @@ internal struct Rect
                  tileBounds.position.Y > position.Y + size.Y ||
                  tileBounds.position.Y + tileBounds.size.Y < position.Y);
     }
+
+    internal readonly Vector2 Center()
+    {
+        return new Vector2(position.X + (size.X / 2), position.Y + (size.Y / 2));
+    }
 }
 
 internal static class DimLib
@@ -61,6 +66,11 @@ internal static class DimLib
         }
         
         Raylib.DrawRectangleLinesEx(new Rectangle(rect.position.X, rect.position.Y, rect.size.X, rect.size.Y), outlineThickness, outlineColor);        
+    }
+
+    internal static void DrawCircle(Rect rect, Color fillColor)
+    {
+        Raylib.DrawCircleV(rect.Center(), (rect.size.X / 2) -1, fillColor);
     }
 
     internal static IEnumerable<Vector2> LineTiles(Vector2 start, Vector2 end)

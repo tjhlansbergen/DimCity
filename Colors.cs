@@ -23,7 +23,7 @@ internal static class Colors
 
 
     // Transportation
-    internal static readonly Color Rail = Color.FromHSV(210, 0.70f, 0.75f);
+    internal static readonly Color Rail = Color.FromHSV(0, 0.80f, 0.45f);
     internal static readonly Color Road = Color.FromHSV(55, 0.70f, 0.80f);
 
 
