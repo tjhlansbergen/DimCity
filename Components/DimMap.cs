@@ -39,7 +39,7 @@ internal class DimMap : DimView
             };
 
             // check if the tile is within the visible bounds of the map
-            if (!Bounds.Intersects(tileBounds)) continue; 
+            if (!Bounds.Intersects(tileBounds)) continue;
 
             // draw
             DrawTile(tileBounds, tileWithLocation.Value);
@@ -48,6 +48,17 @@ internal class DimMap : DimView
 
     private static void DrawTile(Rect tileBounds, Tile tile)
     {
+        if (BuildingTypes.CategoryForBuildingType(tile.BuildingType) == BuildingTypes.BuildingCategory.Zoning)
+        {
+            DimLib.DrawRectWithOutline(
+                tileBounds,
+                fillColor: Colors.Background,
+                outlineColor: BuildingTypes.ColorForBuildingType(tile.BuildingType),
+                1
+            );
+            return;
+        }
+
         DimLib.DrawRect(tileBounds, BuildingTypes.ColorForBuildingType(tile.BuildingType));
     }
 
@@ -61,9 +72,9 @@ internal class DimMap : DimView
                 position = new Vector2(pixel.Key.X * Zoom + Offset.X, pixel.Key.Y * Zoom + Offset.Y),
                 size = new Vector2(Zoom, Zoom)
             };
-           
+
             // check if the pixel is within the visible bounds of the map
-            if (!Bounds.Intersects(pixelBounds)) continue; 
+            if (!Bounds.Intersects(pixelBounds)) continue;
 
             // draw
             DimLib.DrawRect(pixelBounds, pixel.Value);
@@ -86,10 +97,7 @@ internal class DimMap : DimView
         if (category == BuildingTypes.BuildingCategory.Terraform)
         {
             var position = MouseToTile(mousePosition);
-            if (PositionFree(position))
-            {
-                tiles[position] = new Tile { BuildingType = selectedBuildingType };
-            }
+            tiles[position] = new Tile { BuildingType = selectedBuildingType };
 
             return;
         }
@@ -109,10 +117,7 @@ internal class DimMap : DimView
         var color = BuildingTypes.ColorForBuildingType(selectedBuildingType);
         foreach (var position in shape)
         {
-            if (PositionFree(position))
-            {
-                overlay[position] = color;
-            }
+            overlay[position] = color;
         }
     }
 
@@ -136,10 +141,7 @@ internal class DimMap : DimView
         {
             foreach (var position in overlay.Keys)
             {
-                if (PositionFree(position))
-                {
-                    tiles[position] = new Tile { BuildingType = activeBuildType.Value };
-                }
+                tiles[position] = new Tile { BuildingType = activeBuildType.Value };
             }
         }
 

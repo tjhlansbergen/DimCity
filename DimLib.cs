@@ -55,8 +55,12 @@ internal static class DimLib
 
     internal static void DrawRectWithOutline(Rect rect, Color fillColor, Color outlineColor, int outlineThickness)
     {
-        Raylib.DrawRectangleV(rect.position, rect.size, fillColor);
-        Raylib.DrawRectangleLinesEx(new Rectangle(rect.position.X, rect.position.Y, rect.size.X, rect.size.Y), outlineThickness, outlineColor);
+        if (fillColor != Colors.Background)
+        {
+            Raylib.DrawRectangleV(rect.position, rect.size, fillColor);    
+        }
+        
+        Raylib.DrawRectangleLinesEx(new Rectangle(rect.position.X, rect.position.Y, rect.size.X, rect.size.Y), outlineThickness, outlineColor);        
     }
 
     internal static IEnumerable<Vector2> LineTiles(Vector2 start, Vector2 end)
