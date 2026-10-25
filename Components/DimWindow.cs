@@ -92,6 +92,7 @@ internal class DimWindow
         [
             "Amsterdim",
             "Bosten",
+            "Bosten1000",
             "Chicano",
             "Dimver",
             "Elhambra",
@@ -238,7 +239,14 @@ internal class DimWindow
     {
         if (City == null) return;
 
-        var p = Persistance.Store(City);
-        console.Write($"Auto-saved to {p}", debug: true);
+        try
+        {
+            var p = Persistance.Store(City);
+            console.Write($"Auto-saved to {p}", debug: true);    
+        }
+        catch
+        {
+            // may fail when the user is drawing    
+        }
     }
 }
