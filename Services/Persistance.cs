@@ -12,7 +12,7 @@ internal static class Persistance
         try
         {
             var yaml = new Serializer().Serialize(city);
-            var filePath = Path(city.Name);
+            var filePath = Path(city.Name ?? throw new InvalidOperationException("City name cannot be null."));
 
             Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filePath) ?? throw new InvalidOperationException("Could not determine directory path."));
             File.WriteAllText(filePath, yaml);
