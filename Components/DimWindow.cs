@@ -115,6 +115,8 @@ internal class DimWindow
             position = new Vector2(0, 0),
             size = new Vector2(Width, Height),
         }, console, City);
+
+        City.StartTime();
     }
 
     internal void Draw()
@@ -237,6 +239,8 @@ internal class DimWindow
     private void TimerElapsed(object? _)
     {
         if (City == null) return;
+
+        console.Write($"Day: {City.Day}");
 
         try
         {
