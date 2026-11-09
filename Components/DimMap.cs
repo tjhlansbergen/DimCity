@@ -43,13 +43,8 @@ internal class DimMap : DimView
             if (!Bounds.Intersects(tileBounds)) continue;
 
             // draw
-            DrawTile(tileBounds, tileWithLocation.Value);
+            tileWithLocation.Value.Draw(tileBounds);
         }
-    }
-
-    private static void DrawTile(Rect tileBounds, Tile tile)
-    {
-        tile.Draw(tileBounds);
     }
 
     private void DrawOverlay()
