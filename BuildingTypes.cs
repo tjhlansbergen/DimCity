@@ -37,6 +37,14 @@ public static class BuildingTypes
 
     }
 
+    internal static BuildingCategory[] LinearBuildingCategories()
+    {
+        return [
+            BuildingCategory.Transportation,
+            BuildingCategory.Utilities,
+        ];
+    }
+
     internal static BuildingType[] BuildingTypesByCategory(BuildingCategory category)
     {
         return category switch

@@ -49,32 +49,7 @@ internal class DimMap : DimView
 
     private static void DrawTile(Rect tileBounds, Tile tile)
     {
-        //todo: move these out of here
-
-        if (BuildingTypes.CategoryForBuildingType(tile.BuildingType) == BuildingTypes.BuildingCategory.Zoning)
-        {
-            DimLib.DrawRectWithOutline(
-                tileBounds,
-                fillColor: Colors.Background,
-                outlineColor: BuildingTypes.ColorForBuildingType(tile.BuildingType),
-                1
-            );
-            return;
-        }
-
-        if (tile.BuildingType == BuildingTypes.BuildingType.Power)
-        {
-            DimLib.DrawCircle(tileBounds, BuildingTypes.ColorForBuildingType(tile.BuildingType));
-            return;
-        }
-
-        if (tile.BuildingType == BuildingTypes.BuildingType.Rail)
-        {
-            DimLib.DrawRect(tileBounds.Shrink(1), BuildingTypes.ColorForBuildingType(tile.BuildingType));    
-            return;
-        }
-
-        DimLib.DrawRect(tileBounds, BuildingTypes.ColorForBuildingType(tile.BuildingType));
+        tile.Draw(tileBounds);
     }
 
     private void DrawOverlay()
@@ -122,12 +97,9 @@ internal class DimMap : DimView
         var end = MouseToTile(mousePosition);
         overlay.Clear();
 
-        IEnumerable<Vector2> shape = category switch
-        {
-            BuildingTypes.BuildingCategory.Utilities or BuildingTypes.BuildingCategory.Transportation => DimLib.LineTiles(buildStart, end),
-            BuildingTypes.BuildingCategory.Zoning => DimLib.RectangleTiles(buildStart, end),
-            _ => []
-        };
+        IEnumerable<Vector2> shape = BuildingTypes.LinearBuildingCategories().Contains(category) 
+            ? DimLib.LineTiles(buildStart, end) 
+            : DimLib.RectangleTiles(buildStart, end);
 
         var color = BuildingTypes.ColorForBuildingType(selectedBuildingType);
         foreach (var position in shape)

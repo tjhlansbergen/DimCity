@@ -92,7 +92,6 @@ internal class DimWindow
         [
             "Amsterdim",
             "Bosten",
-            "Bosten1000",
             "Chicano",
             "Dimver",
             "Elhambra",

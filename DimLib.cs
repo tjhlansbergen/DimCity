@@ -58,7 +58,7 @@ internal static class DimLib
         }
     }
 
-    internal static void DrawRectWithOutline(Rect rect, Color fillColor, Color outlineColor, int outlineThickness)
+    internal static void DrawRectWithOutline(Rect rect, Color fillColor, Color outlineColor, float outlineThickness)
     {
         if (fillColor != Colors.Background)
         {
