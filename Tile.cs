@@ -1,3 +1,5 @@
+using System.Numerics;
+using Raylib_cs;
 using static BuildingTypes;
 
 public class Tile
@@ -9,22 +11,18 @@ public class Tile
     {
         if (CategoryForBuildingType(BuildingType) == BuildingCategory.Zoning)
         {
-            DimLib.DrawRectWithOutline(
-                bounds,
-                fillColor: Colors.Background,
-                outlineColor: ColorForBuildingType(BuildingType),
-                0.5f
-            );
+            Raylib.DrawPixelV(bounds.Center(), ColorForBuildingType(BuildingType));
             return;
         }
 
         if (BuildingType == BuildingType.Power)
         {
+            if (bounds.size.X > 5) bounds = bounds.Shrink(1);
             DimLib.DrawCircle(bounds, ColorForBuildingType(BuildingType));
             return;
         }
 
-        if (BuildingType == BuildingType.Rail)
+        if (BuildingType == BuildingType.Rail || BuildingType == BuildingType.Road)
         {
             DimLib.DrawRect(bounds.Shrink(1), ColorForBuildingType(BuildingType));    
             return;
