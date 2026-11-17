@@ -24,6 +24,15 @@ internal struct Rect
         };
     }
 
+    internal readonly Rect Grow(int padding)
+    {
+        return new Rect
+        {
+            position = new Vector2(position.X - padding, position.Y - padding),
+            size = new Vector2(size.X + (2*padding), size.Y + (2*padding)),
+        };
+    }
+
     internal readonly Rect Move(Vector2 offset)
     {
         return new Rect
@@ -71,6 +80,16 @@ internal static class DimLib
     internal static void DrawCircle(Rect rect, Color fillColor)
     {
         Raylib.DrawCircleV(rect.Center(), (rect.size.X / 2) -1, fillColor);
+    }
+
+    internal static void DrawCircleWithOutline(Rect rect, Color fillColor, Color outlineColor)
+    {
+        if (fillColor != Colors.Background)
+        {
+            Raylib.DrawCircleV(rect.Center(), (rect.size.X / 2) -1, fillColor);    
+        }
+        Raylib.DrawCircleLinesV(rect.Center(), rect.size.X / 2, outlineColor);
+        
     }
 
     internal static IEnumerable<Vector2> LineTiles(Vector2 start, Vector2 end)

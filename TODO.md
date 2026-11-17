@@ -1,2 +1,2 @@
-- Building: What draws on top of what?
-- Game time
+- Powerstations
+- Special drawing mode for utilities? Make powered tiles outlined?

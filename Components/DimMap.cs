@@ -43,7 +43,7 @@ internal class DimMap : DimView
             if (!Bounds.Intersects(tileBounds)) continue;
 
             // draw
-            tileWithLocation.Value.Draw(tileBounds);
+            tileWithLocation.Value.Draw(tileBounds, activeBuildType);
         }
     }
 
