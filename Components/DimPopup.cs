@@ -45,7 +45,7 @@ internal class DimPopup : DimView
 
         // title
         Raylib.DrawTextEx(Font, Title, new Vector2(Bounds.position.X + padding, Bounds.position.Y + padding), DimWindow.fontSize, 1, Colors.ConsoleText);
-        
+
         // options
         Menu.Draw();
 

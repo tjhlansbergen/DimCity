@@ -1,10 +1,11 @@
 using System.Numerics;
 using Raylib_cs;
+using static BuildingTypes;
 
 internal class DimMap : DimView
 {
     public Vector2 Offset { get; set; } = new(0, 0);
-    private int Zoom { get; set; } = minZoom;
+    private int Zoom { get; set; } = Constants.minZoom;
 
     private Dictionary<Vector2, Tile> tiles;
     private readonly Dictionary<Vector2, (bool Existed, Tile? Tile)> lastChangedTiles = [];
@@ -12,8 +13,7 @@ internal class DimMap : DimView
     private BuildingTypes.BuildingType? activeBuildType;
     private Vector2 buildStart;
 
-    private const int minZoom = 4;
-    private const int maxZoom = 32;
+
 
     internal DimMap(Rect bounds, Console console, DimCity city) : base(bounds, console)
     {
@@ -68,12 +68,12 @@ internal class DimMap : DimView
 
     public void ZoomIn()
     {
-        if (Zoom < maxZoom) Zoom++;
+        if (Zoom < Constants.maxZoom) Zoom++;
     }
 
     public void ZoomOut()
     {
-        if (Zoom > minZoom) Zoom--;
+        if (Zoom > Constants.minZoom) Zoom--;
     }
 
     internal void Build(BuildingTypes.BuildingType selectedBuildingType, Vector2 mousePosition)
@@ -124,7 +124,28 @@ internal class DimMap : DimView
         {
             foreach (var position in overlay.Keys)
             {
-                SetTile(position, new Tile { BuildingType = activeBuildType.Value });
+                // zoning can only build on empty tiles.
+                if (CategoryForBuildingType(activeBuildType.Value) != BuildingCategory.Zoning 
+                || PositionFree(position))
+                {
+                    SetTile(position, new Tile { BuildingType = activeBuildType.Value });
+                }
+
+                // apply power to adjacent tiles if the building is a power plant
+                if (activeBuildType.Value == BuildingTypes.BuildingType.Power)
+                {
+                    foreach (var adjacent in DimLib.ManhattenTiles(position, Constants.powerRadius))
+                    {
+                        if (tiles.TryGetValue(adjacent, out var adjacentTile))
+                        {
+                            adjacentTile.HasPower = true;       
+                        }
+                        else
+                        {
+                            tiles.Add(adjacent, new Tile { BuildingType = BuildingTypes.BuildingType.Select, HasPower = true });
+                        }
+                    }
+                }
             }
         }
 
@@ -137,7 +158,19 @@ internal class DimMap : DimView
         var position = MouseToTile(mousePosition);
         if (!PositionFree(position))
         {
-            RemoveTile(position);
+            if (tiles[position].BuildingType == BuildingTypes.BuildingType.Power)
+            {
+                // remove power from adjacent tiles if the building is a power plant
+                foreach (var adjacent in DimLib.ManhattenTiles(position, Constants.powerRadius))
+                {
+                    if (tiles.TryGetValue(adjacent, out var adjacentTile))
+                    {
+                        adjacentTile.HasPower = false;       
+                    }
+                }
+            }
+
+            tiles[position].BuildingType = BuildingTypes.BuildingType.Select;
         }
     }
 
@@ -170,12 +203,6 @@ internal class DimMap : DimView
     {
         RecordTileBeforeChange(position);
         tiles[position] = tile;
-    }
-
-    private void RemoveTile(Vector2 position)
-    {
-        RecordTileBeforeChange(position);
-        tiles.Remove(position);
     }
 
     private void RecordTileBeforeChange(Vector2 position)

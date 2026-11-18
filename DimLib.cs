@@ -138,4 +138,18 @@ internal static class DimLib
             }
         }
     }
+
+    internal static IEnumerable<Vector2> ManhattenTiles(Vector2 position, int depth)
+    {
+        for (var x = (int)position.X - depth; x <= position.X + depth; x++)
+        {
+            for (var y = (int)position.Y - depth; y <= position.Y + depth; y++)
+            {
+                if (Math.Abs(x - position.X) + Math.Abs(y - position.Y) <= depth)
+                {
+                    yield return new Vector2(x, y);
+                }
+            }
+        }
+    }
 }
